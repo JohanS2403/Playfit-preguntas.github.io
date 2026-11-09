@@ -1,0 +1,2020 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayFit · Hoja de estudio</title>
+<meta name="description" content="Hoja de estudio para la sustentación de PlayFit (Ingeniería de Sistemas, Universidad de San Buenaventura).">
+<meta name="color-scheme" content="light dark">
+
+<!-- Aplica el tema guardado antes de pintar, para evitar parpadeo -->
+<script>
+  (function () {
+    try {
+      var t = JSON.parse(localStorage.getItem('playfit.tema.v1'));
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) { /* sin almacenamiento: se usa el tema del sistema */ }
+  })();
+</script>
+
+<style>
+/* =====================================================================
+   1. TOKENS DE COLOR (modo claro por defecto)
+   ===================================================================== */
+:root {
+  --bg: #f5f7f8;
+  --surface: #ffffff;
+  --surface-2: #eef1f3;
+  --text: #15191e;
+  --muted: #59626e;
+  --border: #dce1e6;
+  --accent: #0b7a6e;
+  --accent-strong: #08594f;
+  --accent-soft: #e2f3f0;
+  --on-accent: #ffffff;
+  --warn-bg: #fde68a;
+  --warn-text: #5a3c00;
+  --warn-soft: #fff8dc;
+  --ok: #15803d;
+  --ok-soft: #e5f4e9;
+  --bad: #b42318;
+  --bad-soft: #fdeceb;
+  --code-bg: #eff2f5;
+  --mark-bg: #ffe066;
+  --mark-text: #1b1400;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 2px 6px rgba(16, 24, 40, .06);
+  --radius: 12px;
+  --hh: 112px; /* alto de la barra superior; lo actualiza el script */
+  color-scheme: light;
+}
+
+/* Modo oscuro automático (si el usuario no forzó "claro") */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1114;
+    --surface: #161a1f;
+    --surface-2: #1d232a;
+    --text: #e7eaee;
+    --muted: #9ba4af;
+    --border: #2a3139;
+    --accent: #38c6b3;
+    --accent-strong: #66d9c9;
+    --accent-soft: #14302c;
+    --on-accent: #052019;
+    --warn-bg: #f4c430;
+    --warn-text: #241a00;
+    --warn-soft: #2c2610;
+    --ok: #4ade80;
+    --ok-soft: #12291b;
+    --bad: #f87171;
+    --bad-soft: #2f1717;
+    --code-bg: #10141a;
+    --mark-bg: #8a6d00;
+    --mark-text: #fff8dc;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4);
+    color-scheme: dark;
+  }
+}
+/* Modo oscuro forzado con el botón */
+:root[data-theme="dark"] {
+  --bg: #0e1114;
+  --surface: #161a1f;
+  --surface-2: #1d232a;
+  --text: #e7eaee;
+  --muted: #9ba4af;
+  --border: #2a3139;
+  --accent: #38c6b3;
+  --accent-strong: #66d9c9;
+  --accent-soft: #14302c;
+  --on-accent: #052019;
+  --warn-bg: #f4c430;
+  --warn-text: #241a00;
+  --warn-soft: #2c2610;
+  --ok: #4ade80;
+  --ok-soft: #12291b;
+  --bad: #f87171;
+  --bad-soft: #2f1717;
+  --code-bg: #10141a;
+  --mark-bg: #8a6d00;
+  --mark-text: #fff8dc;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4);
+  color-scheme: dark;
+}
+
+/* =====================================================================
+   2. BASE
+   ===================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 17px/1.62 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+}
+h1, h2, h3, h4 { line-height: 1.25; margin: 0 0 .5em; }
+h2 { font-size: 1.55rem; letter-spacing: -.01em; }
+h3 { font-size: 1.2rem; margin-top: 1.6em; }
+h4 { font-size: 1.02rem; margin-top: 1.3em; }
+p { margin: 0 0 .9em; }
+ul, ol { padding-left: 1.3em; margin: 0 0 1em; }
+li { margin: .25em 0; }
+a { color: var(--accent); }
+a:hover { color: var(--accent-strong); }
+strong { font-weight: 650; }
+code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: .86em;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  padding: .05em .35em;
+  border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.muted { color: var(--muted); }
+.small { font-size: .88rem; }
+.print-only { display: none; }
+
+/* Botones genéricos */
+.btn {
+  display: inline-flex; align-items: center; gap: .4em;
+  font: inherit; font-size: .9rem; font-weight: 600;
+  color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: .5em .85em; cursor: pointer; min-height: 40px;
+  text-decoration: none;
+}
+.btn:hover { border-color: var(--accent); color: var(--text); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn.primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: var(--on-accent); }
+.btn.ghost { background: transparent; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.icon-btn { padding: .45em; min-width: 40px; justify-content: center; }
+
+/* =====================================================================
+   3. BARRA SUPERIOR + BUSCADOR
+   ===================================================================== */
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.topbar-inner {
+  max-width: 1240px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 10px 16px;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.02rem; margin-right: auto; min-width: 0; }
+.brand-mark {
+  width: 32px; height: 32px; border-radius: 9px; flex: none;
+  background: var(--accent); color: var(--on-accent);
+  display: grid; place-items: center; font-weight: 800; font-size: .95rem;
+}
+.brand { flex: 1 1 0; }
+.brand > div:last-child { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand span.sub { display: block; font-weight: 500; font-size: .78rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 479px) { .brand span.sub { display: none; } .brand-mark { width: 28px; height: 28px; } }
+.search {
+  order: 10; flex: 1 1 100%;
+  position: relative;
+}
+.search input {
+  width: 100%; font: inherit; font-size: 1rem;
+  padding: .6em 2.4em .6em 2.4em;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg); color: var(--text);
+  min-height: 44px;
+}
+.search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.search .s-icon { position: absolute; left: .75em; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
+.search .s-clear {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  border: 0; background: transparent; color: var(--muted); font-size: 1.3rem; line-height: 1;
+  width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: none;
+}
+.search.has-text .s-clear { display: block; }
+#menu-btn { display: inline-flex; }
+@media (min-width: 1024px) {
+  #menu-btn { display: none; }
+  .search { order: 0; flex: 0 1 420px; }
+  .brand { margin-right: 12px; }
+  .topbar-inner { flex-wrap: nowrap; }
+  .top-actions { margin-left: auto; }
+}
+.top-actions { display: flex; gap: 6px; }
+.btn-label { display: none; }
+@media (min-width: 640px) { .btn-label { display: inline; } }
+
+.search-summary {
+  max-width: 1240px; margin: 0 auto; padding: 0 16px 10px;
+  font-size: .88rem; color: var(--muted); display: none;
+}
+.search-summary.show { display: block; }
+
+/* Aviso discreto */
+.notice {
+  display: flex; gap: 8px; align-items: flex-start;
+  font-size: .86rem; color: var(--warn-text);
+  background: var(--warn-soft); border: 1px solid var(--warn-bg);
+  border-radius: 10px; padding: 8px 12px; margin: 0 0 18px;
+}
+:root[data-theme="dark"] .notice { color: var(--text); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .notice { color: var(--text); } }
+
+/* =====================================================================
+   4. DISPOSICIÓN: NAVEGACIÓN LATERAL + CONTENIDO
+   ===================================================================== */
+.layout { max-width: 1240px; margin: 0 auto; display: block; }
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 60;
+  width: min(86vw, 320px);
+  background: var(--surface); border-right: 1px solid var(--border);
+  transform: translateX(-102%); transition: transform .22s ease;
+  overflow-y: auto; padding: 16px 12px 40px;
+}
+body.nav-open .sidebar { transform: none; }
+.nav-overlay { position: fixed; inset: 0; z-index: 55; background: rgba(0,0,0,.45); display: none; }
+body.nav-open .nav-overlay { display: block; }
+.sidebar-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.sidebar nav a {
+  display: block; text-decoration: none; color: var(--text);
+  padding: 7px 10px; border-radius: 8px; font-size: .95rem; line-height: 1.35;
+}
+.sidebar nav a:hover { background: var(--surface-2); }
+.sidebar nav a.active { background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+.sidebar nav .group-title { font-weight: 700; }
+.sidebar nav .sublist { margin: 2px 0 8px 10px; padding-left: 8px; border-left: 2px solid var(--border); }
+.sidebar nav .sublist a { font-size: .88rem; color: var(--muted); padding: 5px 10px; }
+.sidebar nav .sublist a.active { color: var(--accent-strong); }
+
+@media (min-width: 1024px) {
+  .layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 8px; }
+  .sidebar {
+    position: sticky; top: var(--hh); height: calc(100vh - var(--hh));
+    transform: none; width: auto; border-right: 0; background: transparent;
+    padding: 20px 8px 40px 16px; z-index: 1;
+  }
+  .sidebar-head { display: none; }
+  .nav-overlay { display: none !important; }
+}
+
+main { padding: 18px 16px 80px; min-width: 0; }
+.main-sec { max-width: 860px; margin: 0 auto 56px; scroll-margin-top: calc(var(--hh) + 12px); }
+.sub { scroll-margin-top: calc(var(--hh) + 12px); padding-top: 6px; }
+.sec-head { border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 18px; }
+.sec-head .kicker { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.sub > h3 { margin-top: 2em; padding-top: .2em; }
+.lead { font-size: 1.05rem; font-weight: 550; border-left: 3px solid var(--accent); padding-left: 12px; }
+
+/* =====================================================================
+   5. TARJETAS, CIFRAS, AVISOS
+   ===================================================================== */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; margin: 0 0 16px; box-shadow: var(--shadow);
+}
+.card.hero { border-color: var(--accent); border-width: 2px; }
+.card h3:first-child, .card h4:first-child { margin-top: 0; }
+.quote {
+  font-size: 1.08rem; font-weight: 550; margin: 0;
+  background: var(--accent-soft); border-radius: 10px; padding: 14px 16px;
+  border-left: 4px solid var(--accent);
+}
+.quote-label { font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin: 14px 0 6px; }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 16px; }
+@media (min-width: 640px) { .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+.stat b { display: block; font-size: 1.55rem; line-height: 1.1; color: var(--accent-strong); }
+.stat span { font-size: .84rem; color: var(--muted); }
+.callout {
+  border-radius: 10px; padding: 12px 14px; margin: 0 0 16px;
+  background: var(--surface-2); border: 1px solid var(--border); font-size: .95rem;
+}
+.callout.warn { background: var(--warn-soft); border-color: var(--warn-bg); }
+.callout.ok { background: var(--ok-soft); border-color: var(--ok); }
+.callout p:last-child { margin-bottom: 0; }
+.jump { display: inline-flex; align-items: center; gap: .35em; font-weight: 600; text-decoration: none; }
+
+/* =====================================================================
+   6. TABLAS (scroll horizontal dentro del contenedor)
+   ===================================================================== */
+.table-wrap {
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface); margin: 0 0 18px;
+}
+table { border-collapse: collapse; width: 100%; min-width: 600px; font-size: .92rem; }
+table.compact { min-width: 420px; }
+th, td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+th { background: var(--surface-2); font-weight: 650; white-space: nowrap; }
+tbody tr:last-child td { border-bottom: 0; }
+td.k { font-weight: 600; white-space: nowrap; }
+td.num { white-space: nowrap; font-variant-numeric: tabular-nums; }
+caption { caption-side: top; text-align: left; padding: 10px 12px 0; font-weight: 600; color: var(--muted); font-size: .85rem; }
+
+/* =====================================================================
+   7. CÓDIGO (comandos)
+   ===================================================================== */
+.code-block { position: relative; margin: 0 0 18px; }
+.code-block pre {
+  margin: 0; background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; padding-right: 74px; overflow-x: auto;
+  font: 14px/1.6 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+.code-block pre .c { color: var(--muted); }
+.code-block .copy-code {
+  position: absolute; top: 6px; right: 6px; min-height: 32px; padding: .25em .6em; font-size: .78rem;
+}
+
+/* =====================================================================
+   8. DIAGRAMAS (HTML/CSS, se adaptan al tema y al ancho)
+   ===================================================================== */
+.diagram { margin: 0 0 18px; font-size: .9rem; }
+.diagram .box {
+  border: 1.5px solid var(--border); background: var(--surface); border-radius: 10px;
+  padding: 9px 10px; text-align: center; line-height: 1.35;
+}
+.diagram .box strong { display: block; }
+.diagram .box small { color: var(--muted); display: block; font-size: .8rem; }
+.diagram .box.accent { border-color: var(--accent); background: var(--accent-soft); }
+.diagram .box.ext { border-style: dashed; }
+.diagram .zone { border: 1.5px dashed var(--muted); border-radius: 14px; padding: 12px; }
+.diagram .zone.inner { border-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+.diagram .zone-title { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 8px; text-align: center; }
+.diagram .row { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); }
+.diagram .flow { display: flex; flex-direction: column; align-items: center; color: var(--muted); font-size: .78rem; padding: 2px 0; text-align: center; }
+.diagram .flow::before { content: ""; width: 2px; height: 14px; background: var(--muted); }
+.diagram .flow::after { content: ""; border: 6px solid transparent; border-top-color: var(--muted); border-bottom: 0; }
+.diagram .flow span { padding: 1px 0; }
+
+/* Recorrido de una petición (línea de tiempo numerada) */
+ol.steps { list-style: none; padding: 0; counter-reset: paso; margin: 0 0 18px; }
+ol.steps > li {
+  counter-increment: paso; position: relative; padding: 0 0 14px 46px; margin: 0;
+}
+ol.steps > li::before {
+  content: counter(paso); position: absolute; left: 0; top: 0;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: .9rem;
+  display: grid; place-items: center;
+}
+ol.steps > li::after {
+  content: ""; position: absolute; left: 14px; top: 32px; bottom: 2px; width: 2px; background: var(--border);
+}
+ol.steps > li:last-child::after { display: none; }
+ol.steps ol { list-style: lower-alpha; margin-top: .3em; }
+
+/* Gráfico 22 de 30 */
+.dots { display: grid; grid-template-columns: repeat(10, 18px); gap: 6px; margin: 8px 0 6px; }
+.dots i { width: 18px; height: 18px; border-radius: 50%; background: var(--surface-2); border: 1.5px solid var(--border); display: block; }
+.dots i.on { background: var(--accent); border-color: var(--accent); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .82rem; color: var(--muted); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; margin-right: 5px; border: 1.5px solid var(--border); background: var(--surface-2); }
+.legend i.on { background: var(--accent); border-color: var(--accent); }
+
+/* Hipótesis */
+.hyp-grid { display: grid; gap: 14px; grid-template-columns: 1fr; margin-bottom: 18px; }
+@media (min-width: 760px) { .hyp-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hyp { margin: 0; display: flex; flex-direction: column; }
+.hyp .h-id { font-size: 1.5rem; font-weight: 800; color: var(--accent-strong); line-height: 1; }
+.hyp .h-claim { font-weight: 600; margin: 8px 0 10px; }
+.hyp dl { margin: 0 0 10px; font-size: .9rem; }
+.hyp dt { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; margin-top: 6px; }
+.hyp dd { margin: 0; }
+.verdict { margin-top: auto; align-self: flex-start; font-size: .82rem; font-weight: 700; padding: .25em .65em; border-radius: 999px; }
+.verdict.yes { background: var(--ok-soft); color: var(--ok); border: 1px solid var(--ok); }
+.verdict.no { background: var(--bad-soft); color: var(--bad); border: 1px solid var(--bad); }
+
+/* =====================================================================
+   9. ETIQUETAS
+   ===================================================================== */
+.tag {
+  display: inline-flex; align-items: center; font-size: .76rem; font-weight: 650;
+  padding: .15em .6em; border-radius: 999px;
+  background: var(--surface-2); color: var(--muted); border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.tag-warn, .confirmar {
+  background: var(--warn-bg); color: var(--warn-text); border: 1px solid var(--warn-bg);
+  font-size: .74rem; font-weight: 750; padding: .1em .55em; border-radius: 6px; white-space: nowrap;
+}
+.confirmar { display: inline-block; margin: 0 .15em; }
+
+/* =====================================================================
+   10. BANCO DE PREGUNTAS
+   ===================================================================== */
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.chips { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 8px; margin: 0 0 6px; scrollbar-width: thin; }
+@media (min-width: 760px) { .chips { flex-wrap: wrap; overflow: visible; } }
+.chip {
+  flex: none; font: inherit; font-size: .85rem; font-weight: 600;
+  padding: .4em .8em; min-height: 36px; border-radius: 999px; cursor: pointer;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border);
+}
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.chip .n { opacity: .7; font-weight: 500; margin-left: .3em; }
+.chip.warn[aria-pressed="true"] { background: var(--warn-bg); color: var(--warn-text); border-color: var(--warn-bg); }
+.filter-row { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 0 0 14px; font-size: .92rem; }
+select, .text-input {
+  font: inherit; font-size: .92rem; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: .35em .5em; min-height: 38px; max-width: 100%;
+}
+.check { display: inline-flex; align-items: center; gap: .45em; cursor: pointer; }
+.check input { width: 20px; height: 20px; accent-color: var(--accent); }
+
+/* Cada pregunta se muestra con su respuesta a la vista (solo lectura) */
+.q-group > h3 { display: flex; align-items: baseline; gap: 8px; font-size: 1.1rem; margin: 26px 0 8px; }
+.q-group > h3 .n { font-size: .8rem; color: var(--muted); font-weight: 500; }
+.q {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  margin: 0 0 10px; box-shadow: var(--shadow); border-left: 4px solid var(--accent);
+  padding: 14px 14px 12px;
+}
+.q.has-confirm { border-left-color: var(--warn-bg); }
+.q-head { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 8px; }
+.q-text { flex: 1; font-size: 1rem; font-weight: 650; line-height: 1.4; margin: 0; }
+.q-num { flex: none; font-size: .78rem; font-weight: 700; color: var(--muted); background: var(--surface-2); border-radius: 6px; padding: .12em .45em; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.q-body p { margin: 0; }
+.q-actions { display: flex; justify-content: flex-end; margin-top: 6px; }
+.q-actions .btn { min-height: 32px; padding: .25em .6em; font-size: .78rem; font-weight: 600; color: var(--muted); }
+.empty { text-align: center; color: var(--muted); padding: 24px 12px; border: 1px dashed var(--border); border-radius: 12px; display: none; }
+.empty.show { display: block; }
+
+/* =====================================================================
+   11. MODO SIMULACRO
+   ===================================================================== */
+.sim-card { padding: 22px 18px; }
+.sim-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; font-size: .84rem; }
+.sim-q { font-size: 1.28rem; font-weight: 650; line-height: 1.4; margin: 0 0 16px; }
+.sim-a { display: none; background: var(--surface-2); border-radius: 10px; padding: 14px 16px; margin: 0 0 16px; }
+.sim-a.show { display: block; }
+.sim-a p { margin: 0; }
+.sim-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.sim-btns .btn { flex: 1 1 140px; justify-content: center; min-height: 48px; font-size: 1rem; }
+.sim-count { font-size: .84rem; color: var(--muted); margin-top: 12px; }
+
+/* =====================================================================
+   12. BÚSQUEDA (resaltado y ocultos)
+   ===================================================================== */
+mark.hl { background: var(--mark-bg); color: var(--mark-text); border-radius: 3px; padding: 0 1px; }
+.s-hide, .f-hide { display: none !important; }
+.toast {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%) translateY(20px);
+  background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: .9rem;
+  opacity: 0; pointer-events: none; transition: .2s; z-index: 80;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.to-top {
+  position: fixed; right: 14px; bottom: 16px; z-index: 30; border-radius: 50%;
+  width: 46px; height: 46px; display: none; justify-content: center; align-items: center; box-shadow: var(--shadow);
+}
+.to-top.show { display: inline-flex; }
+
+/* =====================================================================
+   13. IMPRESIÓN / GUARDAR COMO PDF
+   ===================================================================== */
+@media print {
+  :root, :root[data-theme], :root:not([data-theme="light"]) {
+    --bg: #fff; --surface: #fff; --surface-2: #f2f2f2; --text: #000; --muted: #444;
+    --border: #bbb; --accent: #0b5e55; --accent-strong: #0b5e55; --accent-soft: #eef7f5;
+    --code-bg: #f4f4f4; --warn-bg: #fde68a; --warn-text: #000; --warn-soft: #fffbe6;
+    --ok: #15803d; --ok-soft: #eef8f0; --bad: #a61b12; --bad-soft: #fdeeee; --shadow: none;
+    color-scheme: light;
+  }
+  body { font-size: 10.5pt; background: #fff; }
+  .topbar, .sidebar, .nav-overlay, .no-print, .toast, .to-top, #simulacro,
+  .copy-code, .q-actions, .chips, .filter-row, .toolbar { display: none !important; }
+  .layout { display: block; }
+  main { padding: 0; }
+  .main-sec { max-width: none; margin-bottom: 20px; }
+  .card, .q, .table-wrap, .code-block, .hyp, ol.steps > li { break-inside: avoid; }
+  .table-wrap { overflow: visible; }
+  table { min-width: 0 !important; font-size: 9pt; }
+  th { white-space: normal; }
+  .code-block pre { white-space: pre-wrap; padding-right: 14px; }
+  a { color: inherit; text-decoration: none; }
+  mark.hl { background: none; color: inherit; }
+  h2 { break-after: avoid; }
+  .print-only { display: inline; }
+  select { border: 0; padding: 0; appearance: none; -webkit-appearance: none; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     BARRA SUPERIOR: menú (móvil), marca, buscador, tema, imprimir
+     ===================================================================== -->
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <button class="btn icon-btn ghost" id="menu-btn" aria-label="Abrir navegación" aria-controls="sidebar" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">PF</div>
+      <div>PlayFit · Hoja de estudio<span class="sub">Sustentación · Ingeniería de Sistemas · USB</span></div>
+    </div>
+    <div class="search" id="search-box">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="search" placeholder="Buscar en preguntas y secciones…" autocomplete="off" aria-label="Buscar en toda la página">
+      <button class="s-clear" id="search-clear" aria-label="Limpiar búsqueda">×</button>
+    </div>
+    <div class="top-actions">
+      <button class="btn icon-btn" id="theme-btn" title="Cambiar tema (automático, claro, oscuro)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>
+        <span class="btn-label" id="theme-label">Auto</span>
+      </button>
+      <button class="btn icon-btn" id="print-btn" title="Imprimir o guardar como PDF (respeta filtros y búsqueda)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg>
+        <span class="btn-label">Imprimir / PDF</span>
+      </button>
+    </div>
+  </div>
+  <div class="search-summary" id="search-summary" aria-live="polite"></div>
+</header>
+
+<div class="nav-overlay" id="nav-overlay"></div>
+
+<div class="layout">
+
+  <!-- ===================================================================
+       NAVEGACIÓN LATERAL (en móvil es un panel deslizable)
+       =================================================================== -->
+  <aside class="sidebar" id="sidebar" aria-label="Navegación">
+    <div class="sidebar-head">
+      <strong>Contenido</strong>
+      <button class="btn icon-btn ghost" id="menu-close" aria-label="Cerrar navegación">×</button>
+    </div>
+    <nav id="nav">
+      <a href="#inicio" class="group-title">Inicio</a>
+      <a href="#tecnica" class="group-title">Explicación técnica</a>
+      <div class="sublist">
+        <a href="#inicio">PlayFit en un minuto</a>
+        <a href="#t-arquitectura">Arquitectura general</a>
+        <a href="#t-azure">Azure, recurso por recurso</a>
+        <a href="#t-kubernetes">Kubernetes por dentro</a>
+        <a href="#t-backend">Backend y microservicios</a>
+        <a href="#t-bd">Base de datos</a>
+        <a href="#t-app">App móvil Flutter</a>
+        <a href="#t-ia">Inteligencia artificial</a>
+        <a href="#t-seguridad">Seguridad capa por capa</a>
+        <a href="#t-gamificacion">Gamificación y analítica</a>
+        <a href="#t-lenguajes">Lenguajes y librerías</a>
+        <a href="#t-recorrido">Recorrido de una petición</a>
+        <a href="#t-pruebas">Pruebas y despliegue</a>
+        <a href="#t-costos">Costos y operación</a>
+        <a href="#t-preguntas">Preguntas probables</a>
+        <a href="#limites">Límites honestos</a>
+      </div>
+      <a href="#preguntas" class="group-title">Banco de preguntas</a>
+      <a href="#seguridad" class="group-title">Seguridad: 7 capas y P1–P20</a>
+      <a href="#hipotesis" class="group-title">Hipótesis y analítica</a>
+      <a href="#limites" class="group-title">Límites y trabajo futuro</a>
+      <a href="#simulacro" class="group-title">Modo simulacro</a>
+    </nav>
+  </aside>
+
+  <main id="contenido">
+
+    <!-- Aviso discreto obligatorio -->
+    <div class="notice" role="note">
+      <span aria-hidden="true">⚠</span>
+      <span>Los datos de la analítica son sintéticos; no demuestran efectividad real.</span>
+    </div>
+
+    <!-- =================================================================
+         INICIO
+         ================================================================= -->
+    <section class="main-sec" id="inicio">
+      <div class="sec-head">
+        <div class="kicker">Inicio</div>
+        <h2>PlayFit en un minuto</h2>
+      </div>
+
+      <div class="card hero" data-unit>
+        <p>PlayFit es una app Android para que los estudiantes de la USB no abandonen el gimnasio. La causa raíz que ataca es entrenar solo y sin seguimiento. La respuesta es social y medible: squads de amigos, retos, duelos, rankings, un asistente con IA y una cámara que cuenta repeticiones.</p>
+        <div class="quote-label">Frase para abrir la defensa</div>
+        <p class="quote">"PlayFit es una app móvil Android; el backend son 4 microservicios detrás de un gateway, en Azure Kubernetes con MariaDB, protegidos por HTTPS, 2FA, permisos por rol y cifrado de los datos de salud."</p>
+      </div>
+
+      <div class="stats" data-unit>
+        <div class="stat"><b>4</b><span>microservicios detrás de un gateway</span></div>
+        <div class="stat"><b>52</b><span>tablas en MariaDB 11.8</span></div>
+        <div class="stat"><b>227 + 78</b><span>pruebas del backend y de la app</span></div>
+        <div class="stat"><b>7 · $0</b><span>capas de seguridad · presupuesto</span></div>
+      </div>
+
+      <div class="table-wrap" data-unit>
+        <table class="compact">
+          <thead><tr><th>Pieza</th><th>En una línea</th></tr></thead>
+          <tbody>
+            <tr><td class="k">App móvil</td><td>Flutter (Dart), Android, versión 0.10.0</td></tr>
+            <tr><td class="k">Backend</td><td>API Gateway + 4 microservicios en Node.js 22 con Express 5 (versión 1.10.0)</td></tr>
+            <tr><td class="k">Base de datos</td><td>MariaDB 11.8 (base de datos SQL relacional), 52 tablas, datos clínicos cifrados con AES-256-GCM</td></tr>
+            <tr><td class="k">Nube</td><td>Azure Kubernetes Service (AKS), región Chile Central, HTTPS con Let's Encrypt</td></tr>
+            <tr><td class="k">IA</td><td>Google Gemini (asistente con funciones y rutinas personalizadas)</td></tr>
+            <tr><td class="k">Cámara</td><td>Google ML Kit Pose Detection, en el celular: la imagen nunca sale del teléfono</td></tr>
+            <tr><td class="k">Presupuesto</td><td>$0: Azure for Students, capas gratuitas de Gemini, Brevo y Firebase</td></tr>
+            <tr><td class="k">Tamaño</td><td>unas 15.600 líneas de Dart y 11.000 de JavaScript; 227 pruebas automáticas del backend</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" data-unit>
+        <div class="quote-label" style="margin-top:0">Cierre sugerido para la defensa</div>
+        <p class="quote">"PlayFit está desplegado y funcionando en Azure, protegido en 7 capas y probado con más de 300 pruebas automáticas. Lo que falta es medir su efecto con personas reales, y la app ya trae todo lo necesario para hacerlo."</p>
+      </div>
+
+      <p class="muted small">Fuente: «PlayFit · Explicación técnica para la sustentación» (6 de noviembre de 2026). El documento explica PlayFit de punta a punta, en el orden en que un jurado lo recorre: qué es, cómo está construido, dónde corre, cómo se protege y qué falta. Cada sección abre con la idea que hay que poder decir en una frase.</p>
+    </section>
+
+    <!-- =================================================================
+         EXPLICACIÓN TÉCNICA (una subsección por cada parte del PDF)
+         ================================================================= -->
+    <section class="main-sec" id="tecnica">
+      <div class="sec-head">
+        <div class="kicker">Explicación técnica</div>
+        <h2>PlayFit de punta a punta</h2>
+        <p class="muted small" style="margin:0">El resumen en un minuto está en <a href="#inicio">Inicio</a>. Cada parte abre con la frase clave (resaltada a la izquierda).</p>
+      </div>
+
+      <!-- ---------- Arquitectura general ---------- -->
+      <div class="sub" id="t-arquitectura" data-unit>
+        <h3>Arquitectura general</h3>
+        <p class="lead">Hay una sola puerta desde Internet (Caddy, con HTTPS) y todo lo demás vive en la red privada del clúster, separado por un firewall interno.</p>
+
+        <div class="diagram" role="img" aria-label="Diagrama de arquitectura: celular, Azure AKS, servicios internos y servicios externos">
+          <div class="box accent"><strong>Celular · app Flutter (Android)</strong><small>solo conoce la dirección pública</small></div>
+          <div class="flow"><span>HTTPS</span></div>
+          <div class="zone">
+            <div class="zone-title">Azure · AKS · Chile Central</div>
+            <div class="row">
+              <div class="box"><strong>Grupo de seguridad (NSG)</strong><small>solo 80 y 443</small></div>
+              <div class="box"><strong>Balanceador</strong><small>IP pública de entrada</small></div>
+            </div>
+            <div class="flow"><span></span></div>
+            <div class="zone inner">
+              <div class="zone-title">Red privada del clúster · firewall interno</div>
+              <div class="box"><strong>Caddy</strong><small>única puerta · HTTPS con Let's Encrypt</small></div>
+              <div class="flow"><span>pasa todo al gateway</span></div>
+              <div class="box accent"><strong>API Gateway</strong><small>reparte /api/* entre los 4 servicios</small></div>
+              <div class="flow"><span></span></div>
+              <div class="row">
+                <div class="box"><strong>auth</strong><small>cuentas, 2FA, roles</small></div>
+                <div class="box"><strong>clinical</strong><small>salud cifrada</small></div>
+                <div class="box"><strong>social</strong><small>sesiones, squads, retos</small></div>
+                <div class="box"><strong>content</strong><small>ejercicios, rutinas, IA</small></div>
+              </div>
+              <div class="flow"><span>solo los servicios llegan aquí</span></div>
+              <div class="row">
+                <div class="box"><strong>MariaDB 11.8</strong><small>52 tablas</small></div>
+                <div class="box"><strong>n8n</strong><small>avisos a administradores</small></div>
+              </div>
+            </div>
+            <div class="flow"><span>IP de salida del clúster</span></div>
+          </div>
+          <div class="flow" style="padding-top:0"><span></span></div>
+          <div class="row">
+            <div class="box ext"><strong>Gemini</strong></div>
+            <div class="box ext"><strong>Brevo</strong></div>
+            <div class="box ext"><strong>Firebase</strong></div>
+            <div class="box ext"><strong>Wompi</strong></div>
+          </div>
+        </div>
+        <p>El celular solo conoce la dirección pública. Caddy pasa todo al gateway, el gateway reparte entre los 4 servicios, y solo los servicios llegan a MariaDB y a n8n. Las llamadas a Gemini, Brevo, Firebase y Wompi salen por la IP de salida del clúster.</p>
+      </div>
+
+      <!-- ---------- Azure recurso por recurso ---------- -->
+      <div class="sub" id="t-azure" data-unit>
+        <h3>El diagrama de Azure, recurso por recurso</h3>
+        <p class="lead">Lo que muestra la captura del portal es la infraestructura que Azure creó sola para el clúster: una máquina, su red, su firewall, un balanceador con dos IP públicas y cuatro discos.</p>
+        <p>Está en un grupo de recursos aparte que AKS crea automáticamente (su nombre empieza por <code>MC_playfit-rg_playfit-aks_…</code>). Ahí no se toca nada a mano: Kubernetes lo administra.</p>
+        <p>Lo que no aparece en la captura es el plano de control de Kubernetes (la API que recibe los <code>kubectl</code>). Lo opera Microsoft y en el nivel Free no se cobra.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Recurso en la captura</th><th>Tipo</th><th>Qué hace en PlayFit</th></tr></thead>
+            <tbody>
+              <tr><td><code>aks-nodepool1-…-vmss</code></td><td>Conjunto de escalado de máquinas virtuales</td><td>Es el nodo: la máquina virtual (serie B, 2 vCPU y 4 GB) donde corren todos los contenedores. Con un conjunto de escalado se agregan nodos con un comando (<code>az aks scale</code>). Con <code>az aks stop</code> se apaga y deja de cobrar cómputo.</td></tr>
+              <tr><td><code>pvc-2f4d…</code>, <code>pvc-a81b…</code>, <code>pvc-af0f…</code>, <code>pvc-b314…</code></td><td>Discos administrados</td><td>Los 4 volúmenes persistentes que pidió Kubernetes: base de datos MariaDB (5 GiB), respaldos nocturnos (2 GiB), datos de n8n (1 GiB) y certificado HTTPS de Caddy (1 GiB). El nombre <code>pvc-&lt;id&gt;</code> es el identificador del volumen. Sobreviven si un contenedor se reinicia o si el clúster se apaga.</td></tr>
+              <tr><td><code>playfit-aks-agentpool</code></td><td>Identidad administrada</td><td>La "credencial sin contraseña" del nodo. Le permite a Kubernetes crear discos, IP y reglas del balanceador en Azure sin guardar claves en ningún archivo.</td></tr>
+              <tr><td><code>aks-vnet-…</code></td><td>Red virtual</td><td>La red privada donde vive el nodo. Los contenedores reciben IP de una red superpuesta (Azure CNI Overlay con Cilium), que no es alcanzable desde Internet.</td></tr>
+              <tr><td><code>aks-agentpool-…-nsg</code></td><td>Grupo de seguridad de red</td><td>El firewall de Azure de esa red: solo deja entrar el tráfico que viene del balanceador a los puertos publicados (80 y 443). Todo lo demás se bloquea antes de llegar a la máquina.</td></tr>
+              <tr><td><code>kubernetes</code></td><td>Equilibrador de carga (Standard)</td><td>Lo creó Kubernetes por el servicio de Caddy de tipo <code>LoadBalancer</code>. Recibe HTTP/HTTPS de Internet y lo pasa al nodo, y además le da salida a Internet al clúster.</td></tr>
+              <tr><td><code>kubernetes-a4734b…</code></td><td>Dirección IP pública</td><td>IP de entrada: la del servicio de Caddy, a la que apunta el nombre <code>playfit-usb.chilecentral.cloudapp.azure.com</code>.</td></tr>
+              <tr><td><code>c23fe339-…</code></td><td>Dirección IP pública</td><td>IP de salida: la que usa el clúster cuando llama a Gemini, Brevo (correos), Wompi, Firebase o descarga la imagen de GitHub.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Cómo leer las flechas de la captura</h4>
+        <ul>
+          <li><strong>Nodo → red virtual:</strong> la máquina tiene su tarjeta de red en esa red.</li>
+          <li><strong>Red virtual ↔ grupo de seguridad:</strong> el firewall está aplicado a la subred.</li>
+          <li><strong>Nodo ↔ balanceador:</strong> el nodo está en el grupo de destino del balanceador.</li>
+          <li><strong>Balanceador ↔ IP públicas:</strong> cada IP es una "cara" del balanceador: una para entrar y otra para salir.</li>
+        </ul>
+        <p>Para comprobar en vivo cuál IP es la de entrada, este comando muestra la <code>EXTERNAL-IP</code>, que debe coincidir con la de <code>kubernetes-a4734b…</code> en el portal. El tamaño exacto de la máquina se ve con el segundo comando o en el portal, abriendo el conjunto de escalado.</p>
+        <div class="code-block"><pre><span class="c"># IP de entrada (EXTERNAL-IP del servicio de Caddy)</span>
+kubectl get svc -n playfit caddy
+<span class="c"># Tamaño exacto de la máquina</span>
+kubectl get nodes -o wide</pre></div>
+      </div>
+
+      <!-- ---------- Kubernetes por dentro ---------- -->
+      <div class="sub" id="t-kubernetes" data-unit>
+        <h3>Kubernetes por dentro</h3>
+        <p class="lead">Dentro del nodo corren 9 cargas, todas en el espacio de nombres <code>playfit</code>, descritas en archivos YAML que viven en el repositorio (<code>k8s/</code>) y se aplican con un solo comando.</p>
+        <p>Es "infraestructura como código": reconstruir todo en otra cuenta toma minutos.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Carga</th><th>Tipo en Kubernetes</th><th>Imagen</th><th>Para qué</th></tr></thead>
+            <tbody>
+              <tr><td class="k">caddy</td><td>Deployment + Service LoadBalancer</td><td><code>caddy:2.10</code></td><td>Única puerta desde Internet. Termina HTTPS con certificado gratuito de Let's Encrypt (se renueva solo), fuerza HTTPS, agrega HSTS, limita el cuerpo a 1 MB y reenvía al gateway</td></tr>
+              <tr><td class="k">gateway</td><td>Deployment</td><td><code>ghcr.io/0kabeee/playfit-backend:1.10.0</code></td><td>API Gateway: límites de peticiones, cabeceras de seguridad y reparto de <code>/api/*</code> a cada servicio</td></tr>
+              <tr><td class="k">auth</td><td>Deployment</td><td>la misma imagen</td><td>Cuentas, sesiones, 2FA, roles y permisos</td></tr>
+              <tr><td class="k">clinical</td><td>Deployment</td><td>la misma imagen</td><td>Historial de salud cifrado</td></tr>
+              <tr><td class="k">social</td><td>Deployment</td><td>la misma imagen</td><td>Sesiones de entrenamiento, squads, retos, duelos, rankings, pagos, soporte, analítica</td></tr>
+              <tr><td class="k">content</td><td>Deployment</td><td>la misma imagen</td><td>Ejercicios, técnica, nutrición, rutinas e IA</td></tr>
+              <tr><td class="k">mariadb</td><td>StatefulSet (disco de 5 GiB)</td><td><code>mariadb:11.8</code></td><td>La base de datos</td></tr>
+              <tr><td class="k">n8n</td><td>Deployment (disco de 1 GiB)</td><td><code>n8nio/n8n:1.123.5</code></td><td>Automatizaciones: avisos a los administradores (pagos aprobados, soporte transferido)</td></tr>
+              <tr><td class="k">respaldo</td><td>CronJob, todos los días a las 3:00 a. m.</td><td><code>mariadb:11.8</code></td><td>Copia de la base de datos al disco de respaldos (2 GiB)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Una sola imagen para los 5 componentes de Node.js.</strong> Se construye una vez (<code>docker build</code>), se publica en GitHub Container Registry y cada Deployment arranca un servicio distinto con el mismo código. Así nunca hay versiones mezcladas.</p>
+
+        <h4>Configuración y secretos separados del código</h4>
+        <ul>
+          <li><strong>ConfigMap <code>playfit-config</code>:</strong> valores no secretos (dominio, puertos, nombre de la base).</li>
+          <li><strong>Secret <code>playfit-secrets</code>:</strong> contraseña de la base de datos, <code>JWT_SECRET</code>, <code>CLINICAL_KEY</code> (llave AES), llaves de Gemini, Brevo, Wompi y Firebase. Se generan desde <code>secrets.env</code>, que está en <code>.gitignore</code>: nunca están en GitHub.</li>
+        </ul>
+
+        <h4>Cada contenedor está endurecido</h4>
+        <ul>
+          <li>Corre sin ser root (<code>runAsNonRoot</code>) y no puede escalar privilegios.</li>
+          <li>El sistema de archivos es de solo lectura; solo puede escribir en <code>/tmp</code>.</li>
+          <li>Tiene límites de memoria (256 MiB por servicio) para que uno no tumbe a los demás.</li>
+          <li>Tiene sondas de salud (<code>/health</code>): si un servicio pierde la base de datos, Kubernetes lo saca del tráfico hasta que se recupere.</li>
+          <li>Antes de arrancar, un contenedor inicial (<code>db-init</code>) espera a la base y aplica las migraciones.</li>
+        </ul>
+
+        <h4>Firewall interno (NetworkPolicies, aplicadas por Cilium)</h4>
+        <p>Por defecto se niega todo el tráfico entre contenedores, y luego se abre solo lo necesario.</p>
+        <div class="table-wrap">
+          <table class="compact">
+            <thead><tr><th>Regla</th><th>Quién puede hablar con quién</th></tr></thead>
+            <tbody>
+              <tr><td><code>denegar-todo-por-defecto</code></td><td>Nadie, salvo lo que se abra abajo</td></tr>
+              <tr><td><code>gateway-entrada</code></td><td>Solo Caddy llega al gateway</td></tr>
+              <tr><td><code>servicios-solo-desde-gateway</code></td><td>Solo el gateway llega a los 4 servicios</td></tr>
+              <tr><td><code>mariadb-solo-desde-servicios</code></td><td>Solo los 4 servicios (y el respaldo) llegan a la base de datos</td></tr>
+              <tr><td><code>n8n-solo-desde-servicios</code></td><td>Solo los servicios llegan a n8n</td></tr>
+              <tr><td><code>social-desde-n8n</code></td><td>n8n solo puede llamar a la API interna de social</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Resultado:</strong> aunque alguien tomara control de un contenedor, no podría conectarse directo a la base de datos ni a otros servicios.</p>
+
+        <h4>Cómo se despliega una versión nueva</h4>
+        <ol>
+          <li><code>docker build</code> y <code>docker push</code> de la imagen con su etiqueta (por ejemplo <code>1.10.0</code>).</li>
+          <li>Se cambia <code>newTag</code> en <code>k8s/overlays/azure/kustomization.yaml</code>.</li>
+          <li><code>kubectl apply -k k8s/overlays/azure</code>: Kubernetes reemplaza los contenedores uno por uno (rolling update), sin apagar la app.</li>
+          <li>Las migraciones de base de datos se aplican solas al arrancar y son idempotentes (se pueden correr muchas veces sin dañar nada).</li>
+        </ol>
+        <div class="code-block"><pre><span class="c"># 1. Construir y publicar la imagen con su etiqueta (ej. 1.10.0)</span>
+docker build
+docker push
+<span class="c"># 2. Cambiar newTag en k8s/overlays/azure/kustomization.yaml</span>
+<span class="c"># 3. Aplicar (rolling update, sin apagar la app)</span>
+kubectl apply -k k8s/overlays/azure</pre></div>
+        <p>Hay dos variantes del mismo despliegue: <code>overlays/local</code> (Docker Desktop, para desarrollo) y <code>overlays/azure</code> (Caddy con HTTPS y la imagen de GitHub).</p>
+      </div>
+
+      <!-- ---------- Backend ---------- -->
+      <div class="sub" id="t-backend" data-unit>
+        <h3>Backend: gateway y microservicios</h3>
+        <p class="lead">El backend son 5 procesos de Node.js 22 con Express 5: un API Gateway, que es el único público, y 4 microservicios separados por dominio.</p>
+        <p>Comparten una librería interna (<code>@playfit/shared</code>) con la conexión a la base, la autenticación, los permisos, el cifrado y los errores. Así la seguridad se escribe una vez y se aplica igual en todos.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Componente</th><th>Puerto</th><th>Rutas</th><th>Responsabilidad</th></tr></thead>
+            <tbody>
+              <tr><td class="k">gateway</td><td class="num">3000</td><td><code>/api/*</code></td><td>Cabeceras de seguridad (Helmet), CORS, límite de 300 peticiones por minuto por IP y de 10 intentos de login cada 15 minutos, tiempo máximo de 15 s por petición, y reparto por prefijo. No lee los cuerpos: solo reenvía.</td></tr>
+              <tr><td class="k">auth-service</td><td class="num">3001</td><td class="num">42</td><td>Registro con consentimientos, login, 2FA, sesión única, recuperación de contraseña, cambio de correo, roles y permisos, contraseñas temporales, inactividad, avatares, auditoría y métricas del panel</td></tr>
+              <tr><td class="k">clinical-service</td><td class="num">3002</td><td class="num">6</td><td>Historial de salud (condiciones, lesiones, medicamentos) cifrado; entrega a la IA solo "banderas" en código, nunca el texto</td></tr>
+              <tr><td class="k">social-service</td><td class="num">3003</td><td class="num">48</td><td>Sesiones de entrenamiento, récords, XP y niveles, rachas, squads, retos, duelos, rankings, insignias, notificaciones, Premium con Wompi, soporte, analítica del piloto y "Mis resultados"</td></tr>
+              <tr><td class="k">content-service</td><td class="num">3004</td><td class="num">20</td><td>Catálogo de 60 ejercicios con técnica y video, nutrición, rutinas (propias y con IA) y el asistente con Gemini</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Por qué microservicios y no un solo servidor</h4>
+        <ul>
+          <li><strong>Aislamiento de datos sensibles:</strong> solo clinical tiene la llave para descifrar la salud.</li>
+          <li><strong>Fallas acotadas:</strong> si la IA o los pagos fallan, el registro de entrenamientos sigue funcionando.</li>
+          <li><strong>Escalado independiente:</strong> se puede subir a 3 copias solo el servicio con más carga.</li>
+          <li><strong>Equipos en paralelo:</strong> cada integrante podía trabajar un servicio sin pisar a los demás.</li>
+        </ul>
+        <p><strong>Cómo se comunican:</strong> la app solo habla con el gateway por HTTPS. El gateway llama a los servicios por la red interna. Los servicios comparten la misma MariaDB, cada uno con sus propias tablas, y se avisan eventos entre sí por llamadas internas (por ejemplo, social le avisa a n8n cuando se aprueba un pago).</p>
+        <h4>Servicios externos que usa el backend</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Servicio</th><th>Para qué</th><th>Desde</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Google Gemini</td><td>Asistente y rutinas personalizadas</td><td>content</td></tr>
+              <tr><td class="k">Brevo</td><td>Correos con códigos (verificación, recuperación, otra sesión, cambio de correo)</td><td>auth</td></tr>
+              <tr><td class="k">Firebase Cloud Messaging</td><td>Notificaciones push al celular</td><td>auth, social</td></tr>
+              <tr><td class="k">Wompi (sandbox)</td><td>Pagos de Premium; el servidor verifica la firma de cada evento</td><td>social</td></tr>
+              <tr><td class="k">GitHub Container Registry</td><td>Guarda la imagen Docker</td><td>Kubernetes</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---------- Base de datos ---------- -->
+      <div class="sub" id="t-bd" data-unit>
+        <h3>Base de datos</h3>
+        <p class="lead">MariaDB 11.8 es una base de datos SQL relacional (derivada de MySQL y de código abierto) con 52 tablas; lo sensible nunca se guarda en claro: contraseñas con bcrypt, salud con AES-256-GCM, tokens y códigos con SHA-256.</p>
+        <p>Relacional quiere decir que los datos se guardan en tablas con filas y columnas, unidas entre sí por llaves (por ejemplo, cada sesión apunta al usuario que la hizo), y se consultan con el lenguaje SQL. Se eligió una base relacional porque los datos son muy relacionados (usuario → squad → reto → participación) y se necesitan transacciones: cuando alguien registra una sesión, en una sola operación se guardan las series, el XP, la racha, los récords y el progreso de los retos, o no se guarda nada.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Grupo</th><th>Tablas principales</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Cuentas y acceso</td><td><code>usuarios</code>, <code>roles</code>, <code>permisos</code>, <code>rol_permisos</code>, <code>usuario_roles</code>, <code>usuario_permisos</code>, <code>refresh_tokens</code>, <code>sesiones_actividad</code>, <code>intentos_login</code>, <code>codigos_verificacion</code>, <code>codigos_respaldo_2fa</code>, <code>consentimientos</code>, <code>configuracion</code>, <code>auditoria_accesos</code></td></tr>
+              <tr><td class="k">Salud</td><td><code>historiales_clinicos</code>, <code>flags_clinicos</code>, <code>estudiante_flags</code>, <code>mediciones_corporales</code>, <code>ejercicio_contraindicaciones</code></td></tr>
+              <tr><td class="k">Entrenamiento</td><td><code>sesiones_entrenamiento</code>, <code>series_ejercicio</code>, <code>ejercicios</code>, <code>tips_tecnica</code>, <code>rutinas</code>, <code>rutina_ejercicios</code>, <code>contenido_nutricion</code></td></tr>
+              <tr><td class="k">Juego y social</td><td><code>perfil_gamificacion</code>, <code>xp_movimientos</code>, <code>insignias</code>, <code>estudiante_insignias</code>, <code>squads</code>, <code>squad_miembros</code>, <code>retos</code>, <code>reto_participaciones</code>, <code>duelos</code>, <code>actividad_feed</code>, <code>notificaciones</code>, <code>dispositivos_push</code></td></tr>
+              <tr><td class="k">IA</td><td><code>conversaciones_ia</code>, <code>mensajes_ia</code>, <code>ia_memoria</code>, <code>ia_acciones</code>, <code>ia_uso_diario</code>, <code>mascota_mensajes</code></td></tr>
+              <tr><td class="k">Pagos y soporte</td><td><code>pagos</code>, <code>premium_movimientos</code>, <code>wompi_eventos</code>, <code>soporte_conversaciones</code>, <code>soporte_mensajes</code></td></tr>
+              <tr><td class="k">Analítica</td><td><code>piloto_cohortes</code>, <code>piloto_participantes</code>, <code>uso_diario</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Qué se protege y cómo</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Dato</th><th>Cómo se guarda</th><th>Por qué así</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Contraseña</td><td>Hash bcrypt con sal (empieza por <code>$2a$10$</code>)</td><td>No se puede revertir; dos contraseñas iguales dan hashes distintos</td></tr>
+              <tr><td class="k">Condiciones, lesiones y medicamentos</td><td>AES-256-GCM (empieza por <code>v1:</code>), llave de 32 bytes en un Secret de Kubernetes</td><td>Se necesita leerlos de vuelta, así que se cifran; GCM además detecta si alguien los alteró</td></tr>
+              <tr><td class="k">Secreto del 2FA</td><td>Cifrado</td><td>Si se filtrara la base, no se podrían generar códigos</td></tr>
+              <tr><td class="k">Refresh tokens, códigos de correo y de respaldo</td><td>SHA-256</td><td>Solo hay que compararlos, nunca leerlos</td></tr>
+              <tr><td class="k">Texto de cada consentimiento aceptado</td><td>SHA-256 del texto exacto</td><td>Prueba de qué versión aceptó cada persona (Ley 1581)</td></tr>
+              <tr><td class="k">Correo</td><td>En claro</td><td>Es el usuario de ingreso; tiene que poder buscarse</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Migraciones:</strong> el esquema crece por fases con archivos numerados (<code>01_schema.sql</code> a <code>13_fase20.sql</code>). Son idempotentes (<code>IF NOT EXISTS</code>) y se aplican solas al arrancar el servicio, así que nadie tiene que tocar la base a mano en Azure.</p>
+        <p><strong>Respaldos:</strong> un CronJob hace una copia completa todos los días a las 3:00 a. m. en un disco aparte de 2 GiB.</p>
+        <p><strong>Acceso:</strong> la base no tiene IP pública. Para revisarla (por ejemplo, con HeidiSQL) se abre un túnel temporal con <code>kubectl port-forward</code>, que exige las credenciales del clúster.</p>
+      </div>
+
+      <!-- ---------- App móvil ---------- -->
+      <div class="sub" id="t-app" data-unit>
+        <h3>App móvil Flutter</h3>
+        <p class="lead">La app está hecha en Flutter (lenguaje Dart), tiene 5 pestañas y 24 módulos de pantallas, y lo más pesado —contar repeticiones con la cámara— ocurre en el propio celular.</p>
+        <p>Se eligió Flutter porque, con un solo código, compila a Android nativo (y a iOS en el futuro), y porque da control total del diseño.</p>
+        <p><strong>Las 5 pestañas:</strong> Inicio, Mi squad, Retos, Técnica y Mi perfil. El personal ve además el panel del administrador, con pestañas que aparecen o desaparecen según sus permisos.</p>
+        <div class="table-wrap">
+          <table class="compact">
+            <thead><tr><th>Módulo</th><th>Qué hace</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Registro e ingreso</td><td>Consentimientos por separado (datos, salud, cámara, IA) y mayoría de edad; reglas de contraseña; 2FA; sesión única</td></tr>
+              <tr><td class="k">Inicio</td><td>Racha, XP y nivel; vaso de la mascota que se llena con los días entrenados; rutinas; tarjeta del squad</td></tr>
+              <tr><td class="k">Registrar sesión</td><td>60 ejercicios por sección (gimnasio, peso libre, bandas), cada uno con su ilustración de la mascota</td></tr>
+              <tr><td class="k">Cámara</td><td>Cuenta repeticiones o segundos (planchas) y valida el rango de movimiento</td></tr>
+              <tr><td class="k">Rutinas</td><td>Propias o creadas con IA (según equipo, minutos, objetivo e historial de salud), con cronómetro de descanso</td></tr>
+              <tr><td class="k">Social</td><td>Squad (máximo 3 retos activos), retos, duelos 1 contra 1, ranking general y por ejercicio con podio</td></tr>
+              <tr><td class="k">Técnica y nutrición</td><td>Fichas con video, errores comunes y contraindicaciones; consejos de nutrición</td></tr>
+              <tr><td class="k">Asistente</td><td>Chat con IA por texto o voz, que puede registrar sesiones o crear retos (pidiendo confirmación)</td></tr>
+              <tr><td class="k">Perfil</td><td>Mis resultados (series, peso y repeticiones de 8 semanas), historial clínico, insignias, avatar, Premium, soporte, seguridad</td></tr>
+              <tr><td class="k">Panel del administrador</td><td>Resumen, usuarios, roles y permisos, seguridad de sesiones, retos oficiales, soporte, pagos, auditoría y analítica</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Cómo cuenta repeticiones la cámara</h4>
+        <ol class="steps">
+          <li>Google ML Kit Pose Detection detecta 33 puntos del cuerpo en cada cuadro de la cámara, en el celular.</li>
+          <li>La app calcula el ángulo de la articulación que trabaja (rodilla en sentadillas, codo en flexiones y curls, cadera, hombro) con trigonometría sobre tres puntos.</li>
+          <li>Una repetición cuenta cuando el ángulo baja de un umbral y vuelve a subir de otro. Los dos umbrales distintos evitan contar dos veces un temblor.</li>
+          <li>Solo usa puntos con confianza suficiente; si no ve bien el cuerpo, avisa en vez de contar mal.</li>
+          <li>Los ejercicios isométricos (plancha) se miden por tiempo, y los que no se pueden medir con la cámara lo dicen.</li>
+        </ol>
+        <p><strong>La imagen nunca sale del teléfono:</strong> no se graba ni se envía; al servidor solo llega el número final de repeticiones.</p>
+        <p><strong>Voz:</strong> <code>speech_to_text</code> convierte lo que la persona dice en texto para el asistente, y <code>flutter_tts</code> lee las respuestas en voz alta. Las dos usan el motor del propio celular.</p>
+        <p><strong>Sin conexión:</strong> si no hay internet, la sesión se guarda en una cola local y se envía sola al volver la señal. Un aviso en Inicio dice cuántas quedan pendientes.</p>
+        <h4>Sesión segura en el celular</h4>
+        <ul>
+          <li>Los tokens se guardan en <code>flutter_secure_storage</code> (Android Keystore), no en archivos normales.</li>
+          <li>El access token dura 15 minutos y se renueva solo con el refresh token.</li>
+          <li>Los campos de contraseña bloquean copiar y cortar.</li>
+          <li>La app se compila firmada con la llave del equipo, y la dirección del servidor se inyecta al compilar (<code>--dart-define-from-file</code>).</li>
+        </ul>
+      </div>
+
+      <!-- ---------- IA ---------- -->
+      <div class="sub" id="t-ia" data-unit>
+        <h3>Inteligencia artificial</h3>
+        <p class="lead">La IA es Google Gemini (modelo <code>gemini-3.1-flash-lite</code>, capa gratuita), y nunca ve datos personales ni texto clínico: solo códigos de "banderas" de salud.</p>
+        <p>Se usa en dos lugares: el asistente de chat y las rutinas personalizadas. Gemini se llama solo desde el servidor (content-service), así que la llave nunca está en el celular.</p>
+        <h4>Qué recibe el modelo</h4>
+        <ul>
+          <li>Las banderas de salud en código (por ejemplo, una lesión de rodilla), derivadas del historial cifrado. Nunca el texto que escribió la persona, su nombre ni su correo.</li>
+          <li>Las preferencias que la persona pidió recordar (objetivo, nivel, días por semana, horario). El asistente tiene prohibido guardar datos de salud.</li>
+          <li>Reglas fijas: no es médico, no diagnostica, no recomienda medicamentos ni dietas extremas.</li>
+        </ul>
+        <h4>Agente con funciones (function calling)</h4>
+        <p>El modelo puede pedir que el servidor ejecute 5 funciones. Las que cambian datos solo proponen: la app muestra una tarjeta y nada se guarda hasta que la persona toca Confirmar.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Función</th><th>Qué hace</th><th>¿Pide confirmación?</th></tr></thead>
+            <tbody>
+              <tr><td><code>consultar_progreso</code></td><td>Lee racha, XP, nivel, sesiones de 7 días y retos del squad</td><td>No, solo lee</td></tr>
+              <tr><td><code>registrar_sesion</code></td><td>Propone registrar una sesión que la persona cuenta ("hice 3 series de 10 dominadas")</td><td>Sí</td></tr>
+              <tr><td><code>crear_reto_squad</code></td><td>Propone un reto para el squad, con meta y días validados</td><td>Sí</td></tr>
+              <tr><td><code>guardar_preferencia</code></td><td>Recuerda una preferencia que la persona dijo de forma explícita</td><td>No (y nunca salud)</td></tr>
+              <tr><td><code>transferir_a_humano</code></td><td>Pasa la conversación al chat de soporte del equipo</td><td>No</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Barreras de seguridad del asistente</h4>
+        <ul>
+          <li><strong>Señales de alarma:</strong> si alguien menciona dolor de pecho, desmayo, falta de aire o similares, el servidor responde con una recomendación de buscar atención médica, sin pasar por la IA.</li>
+          <li><strong>Límites de uso:</strong> 20 mensajes al día (100 con Premium) y máximo 10 rutinas con IA al día, para no agotar la capa gratuita.</li>
+          <li>Mensajes de máximo 1.000 caracteres.</li>
+          <li><strong>Validación del servidor:</strong> lo que el modelo propone se valida igual que si viniera de la app (ejercicios del catálogo, rangos de repeticiones y peso). Si la IA "inventa", el servidor lo rechaza.</li>
+        </ul>
+        <p><strong>Rutinas con IA:</strong> la persona elige equipo disponible, minutos y objetivo. Gemini arma la rutina con ejercicios del catálogo y el servidor quita los que están contraindicados por sus banderas de salud. Con Premium hay un ajuste semanal según las sesiones reales.</p>
+      </div>
+
+      <!-- ---------- Seguridad capa por capa ---------- -->
+      <div class="sub" id="t-seguridad" data-unit>
+        <h3>Seguridad capa por capa</h3>
+        <p class="lead">La seguridad está en profundidad: para llegar a un dato hay que pasar por 7 capas, y cada una funciona aunque otra falle.</p>
+        <p>El enfoque sigue el OWASP Top 10 y el OWASP Mobile Top 10, y todo está documentado en <code>docs/seguridad/INFORME_VULNERABILIDADES.md</code>.</p>
+        <p class="callout"><a class="jump" href="#seguridad">→ Tabla de las 7 capas, pruebas de seguridad realizadas y las 20 pruebas del profesor (P1–P20)</a></p>
+
+        <h4>Cómo funciona la sesión</h4>
+        <ol class="steps">
+          <li>Al iniciar sesión el servidor compara la contraseña con bcrypt. Si el correo no existe, compara igual contra un hash falso, para que el tiempo de respuesta no revele qué correos están registrados.</li>
+          <li>Si la cuenta tiene 2FA, pide el código de 6 dígitos (TOTP, como Google Authenticator) o un código de respaldo. El mismo código no se puede usar dos veces.</li>
+          <li>Entrega un access token (JWT firmado con HS256) que dura 15 minutos y un refresh token de 7 días, del que solo se guarda el hash.</li>
+          <li>Cada vez que se renueva, el refresh token cambia (rotación). Si alguien reusa uno viejo, se revoca toda esa "familia" de sesión.</li>
+          <li>Cada petición vuelve a revisar en la base que la sesión siga viva. Por eso, al cerrar sesión, el token deja de servir en ese instante, no a los 15 minutos.</li>
+        </ol>
+
+        <h4>Reglas de cuentas</h4>
+        <ul>
+          <li><strong>Contraseñas:</strong> mayúscula, número y símbolo; nunca solo números ni secuencias como 1234; distinta de la anterior al cambiarla.</li>
+          <li><strong>Correos:</strong> solo letras, números, punto, guion y guion bajo; sin duplicados aunque cambien mayúsculas.</li>
+          <li><strong>Bloqueo:</strong> 5 contraseñas incorrectas en 15 minutos bloquean esa cuenta, aunque se cambie de IP, porque el conteo se guarda por correo en la base.</li>
+          <li><strong>Sesión única:</strong> si ya hay una sesión abierta en otro celular, el segundo no entra. Puede cerrar la otra con un código que llega al correo, y si la app se desinstaló, la sesión se libera sola.</li>
+          <li><strong>Inactividad configurable:</strong> el administrador fija cuándo se cierra la sesión por no usar la app (de 5 minutos a 4 horas para el personal; hasta 7 días para quienes entrenan).</li>
+          <li><strong>Contraseña temporal:</strong> el administrador nunca escribe la contraseña de otra persona. El sistema genera una temporal fuerte, que vence en 24 horas, cierra las sesiones de esa cuenta y obliga a cambiarla al entrar.</li>
+          <li><strong>Códigos por correo:</strong> se guardan con hash, vencen y admiten máximo 5 intentos.</li>
+        </ul>
+        <p><strong>Contra la escalada de privilegios:</strong> nadie se puede cambiar sus propios permisos; solo puede dar o quitar funciones que él mismo tiene; solo un administrador toca a otro administrador; y los roles en uso no se pueden borrar. Cada cambio queda en la auditoría con fecha y responsable.</p>
+        <p><strong>Pagos:</strong> el servidor verifica la firma (<code>checksum</code>) de cada evento de Wompi con una llave secreta y guarda cada evento una sola vez, así que un evento falso o repetido no activa Premium.</p>
+        <p><strong>IA:</strong> además de lo de la sección anterior, si el modelo dice que "ya registró" algo sin haber llamado a la función, el servidor corrige la respuesta: el servidor sabe lo que de verdad pasó.</p>
+      </div>
+
+      <!-- ---------- Gamificación y analítica ---------- -->
+      <div class="sub" id="t-gamificacion" data-unit>
+        <h3>Gamificación, social y analítica del objetivo 3</h3>
+        <p class="lead">El juego premia la constancia, no el exceso, y la analítica del panel repite dentro de la app el mismo análisis estadístico del documento (verificado contra scipy).</p>
+        <p>Reglas del juego (todas en <code>gamification.js</code>, sin base de datos, para poder probarlas):</p>
+        <div class="table-wrap">
+          <table class="compact">
+            <thead><tr><th>Regla</th><th>Valor</th></tr></thead>
+            <tbody>
+              <tr><td class="k">XP por sesión registrada</td><td>50 (solo las 2 primeras del día, para evitar abusos)</td></tr>
+              <tr><td class="k">XP por nuevo récord personal</td><td>25 por ejercicio</td></tr>
+              <tr><td class="k">Bono de racha</td><td>100 a los 7 días, 200 a los 14, 500 a los 30</td></tr>
+              <tr><td class="k">Nivel</td><td>Uno cada 300 XP</td></tr>
+              <tr><td class="k">Duelos 1 contra 1</td><td>Máximo 3 abiertos y 7 días; 60 XP al ganador, 25 por empate; se mide con las sesiones reales</td></tr>
+              <tr><td class="k">Insignias</td><td>6, con medalla propia (primer paso, rachas de 7 y 14, 100 repeticiones, fundador de squad, retador)</td></tr>
+              <tr><td class="k">Avatares</td><td>40 en 6 grupos; los especiales se desbloquean por nivel, insignia o Premium</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Privacidad en lo social:</strong> el ranking muestra el nombre y solo la inicial del apellido, y las 30 cuentas sintéticas del piloto nunca aparecen.</p>
+        <h4>Analítica del objetivo 3 (panel › Analítica)</h4>
+        <ul>
+          <li>Calcula lo mismo que el notebook de Colab y los documentos Analítica descriptiva y Prueba de hipótesis: perfil, causas de abandono, sesiones por semana antes y con PlayFit, evolución semanal, módulos usados, retos, series y kilos por semana, y SUS.</li>
+          <li>La estadística (Wilcoxon, Shapiro-Wilk, binomial con intervalo de Clopper-Pearson, Friedman, corrección de Holm, bootstrap) está programada en JavaScript y 50 comprobaciones dan lo mismo que scipy.</li>
+          <li>Los datos de uso los registra la app sola (sesiones, series, retos, qué módulo se usa cada día). Lo que viene de encuestas (línea base, SUS) se importa con un script.</li>
+          <li>Se exporta a CSV para volver a correr el notebook con las cifras exactas.</li>
+        </ul>
+        <div class="callout warn">
+          <p>Los datos de la analítica son sintéticos (30 participantes del CSV del documento), están marcados como tales y sirven para validar el procedimiento. Con esos datos, 22 de 30 aumentaron su frecuencia (Wilcoxon, p &lt; 0,001). No es una prueba de que PlayFit funcione: eso exige el piloto real, y además, sin grupo control solo se puede hablar de asociación, no de causa.</p>
+        </div>
+        <p><strong>Mis resultados (vista de quien entrena):</strong> tres botones (series, peso, repeticiones) con 8 semanas de datos, un veredicto sencillo (mejorando, estable o bajando, comparando las últimas 2 semanas con las 2 anteriores) y la mascota con la pose que corresponde.</p>
+        <p><a class="jump" href="#hipotesis">→ Ver H1, H2, H3 y la corrección de Holm</a></p>
+      </div>
+
+      <!-- ---------- Lenguajes ---------- -->
+      <div class="sub" id="t-lenguajes" data-unit>
+        <h3>Lenguajes, frameworks y librerías</h3>
+        <p class="lead">Cuatro lenguajes hacen todo el proyecto: Dart (app), JavaScript (backend), SQL (base de datos) y YAML (infraestructura); cada herramienta se eligió por ser gratuita, madura y conocida por el equipo.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Capa</th><th>Tecnología</th><th>Lenguaje</th><th>Por qué</th></tr></thead>
+            <tbody>
+              <tr><td class="k">App</td><td>Flutter 3</td><td>Dart</td><td>Un código para Android (e iOS a futuro), diseño propio, buen rendimiento con la cámara</td></tr>
+              <tr><td class="k">App</td><td>Google ML Kit Pose Detection</td><td>Dart (plugin nativo)</td><td>Detección del cuerpo en el celular, gratis y sin enviar video</td></tr>
+              <tr><td class="k">App</td><td><code>camera</code>, <code>speech_to_text</code>, <code>flutter_tts</code></td><td>Dart</td><td>Cámara, dictado y lectura en voz alta con los motores del teléfono</td></tr>
+              <tr><td class="k">App</td><td><code>flutter_secure_storage</code>, <code>http</code>, <code>shared_preferences</code></td><td>Dart</td><td>Tokens en el Keystore, llamadas a la API, caché local</td></tr>
+              <tr><td class="k">App</td><td><code>firebase_messaging</code>, <code>qr_flutter</code>, <code>youtube_player_iframe</code>, <code>google_fonts</code>, <code>flutter_svg</code></td><td>Dart</td><td>Push, QR del 2FA, videos de técnica, tipografía e íconos (Lucide)</td></tr>
+              <tr><td class="k">Backend</td><td>Node.js 22 + Express 5</td><td>JavaScript</td><td>El mismo lenguaje en los 5 componentes, ecosistema enorme, ligero en memoria</td></tr>
+              <tr><td class="k">Backend</td><td>Sequelize + mysql2</td><td>JavaScript</td><td>Conexión a MariaDB con consultas parametrizadas</td></tr>
+              <tr><td class="k">Backend</td><td><code>jsonwebtoken</code>, <code>bcryptjs</code>, <code>crypto</code> de Node</td><td>JavaScript</td><td>JWT, hash de contraseñas, AES-256-GCM, SHA-256 y TOTP</td></tr>
+              <tr><td class="k">Backend</td><td>Helmet, <code>express-rate-limit</code>, <code>cors</code>, <code>http-proxy-middleware</code></td><td>JavaScript</td><td>Seguridad y reparto en el gateway</td></tr>
+              <tr><td class="k">Backend</td><td><code>node:test</code></td><td>JavaScript</td><td>Pruebas automáticas sin librerías extra</td></tr>
+              <tr><td class="k">Datos</td><td>MariaDB 11.8</td><td>SQL</td><td>Relacional, libre, compatible con MySQL, transacciones</td></tr>
+              <tr><td class="k">Infraestructura</td><td>Docker, Kubernetes (AKS), Kustomize</td><td>YAML</td><td>Contenedores reproducibles y despliegue declarativo</td></tr>
+              <tr><td class="k">Infraestructura</td><td>Caddy 2.10</td><td>Caddyfile</td><td>HTTPS automático con Let's Encrypt</td></tr>
+              <tr><td class="k">Infraestructura</td><td>Cilium</td><td>(de AKS)</td><td>Hace cumplir el firewall interno (NetworkPolicies)</td></tr>
+              <tr><td class="k">Automatización</td><td>n8n 1.123</td><td>Flujos visuales</td><td>Avisos a los administradores sin programar</td></tr>
+              <tr><td class="k">IA</td><td>Google Gemini API</td><td>REST/JSON</td><td>Modelo con function calling y capa gratuita</td></tr>
+              <tr><td class="k">Servicios</td><td>Brevo, Firebase Cloud Messaging, Wompi (sandbox), GitHub Container Registry</td><td>REST</td><td>Correo, push, pagos y registro de imágenes, todos gratis</td></tr>
+              <tr><td class="k">Analítica</td><td>Python (scipy, pandas) en Google Colab</td><td>Python</td><td>Verificación de la estadística y generación del piloto sintético</td></tr>
+              <tr><td class="k">Diseño</td><td>Google Gemini (imágenes)</td><td>—</td><td>Mascota, 60 íconos de ejercicios, 40 avatares, 6 medallas e ícono de la app</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---------- Recorrido de una petición ---------- -->
+      <div class="sub" id="t-recorrido" data-unit>
+        <h3>Recorrido de una petición: registrar una sesión</h3>
+        <p class="lead">Una sesión registrada en el celular atraviesa 6 componentes y se guarda en una sola transacción; si algo falla en el camino, no queda nada a medias.</p>
+        <p>Este recorrido sirve para explicar la arquitectura con un ejemplo concreto.</p>
+        <ol class="steps">
+          <li><strong>Celular:</strong> la persona termina sus series (a mano o contadas por la cámara) y toca Registrar. La app arma un JSON con fecha, ejercicios y series, y lo envía con su access token en la cabecera <code>Authorization</code>.</li>
+          <li><strong>Internet → Azure:</strong> la petición llega por HTTPS a la IP pública de entrada. El grupo de seguridad la deja pasar porque va al puerto 443, y el balanceador la entrega al nodo.</li>
+          <li><strong>Caddy:</strong> descifra HTTPS, revisa que el cuerpo no pase de 1 MB, pone la IP real del cliente y reenvía al gateway por la red interna.</li>
+          <li><strong>Gateway:</strong> revisa el límite de peticiones de esa IP, agrega cabeceras de seguridad y, como la ruta empieza por <code>/api/social</code>, la pasa a social-service.</li>
+          <li><strong>social-service, antes de tocar datos:</strong>
+            <ol>
+              <li>Verifica la firma y la vigencia del JWT.</li>
+              <li>Comprueba en la base que la sesión siga abierta y que no haya vencido por inactividad.</li>
+              <li>Calcula los permisos efectivos de la persona y exige el permiso de registrar entrenamientos.</li>
+              <li>Valida cada campo: ejercicio del catálogo, repeticiones de 1 a 200, peso de 0 a 500 kg, fecha de máximo 7 días atrás.</li>
+            </ol>
+          </li>
+          <li><strong>social-service, en una transacción de MariaDB:</strong> guarda la sesión y sus series, suma XP (solo si es una de las 2 primeras del día), actualiza la racha y el nivel, detecta récords, entrega insignias, avanza los retos y duelos del squad y publica en la actividad del squad.</li>
+          <li><strong>Después de guardar:</strong> anota el uso del módulo para la analítica y manda notificaciones push (por ejemplo, "Ana completó el reto") por Firebase.</li>
+          <li><strong>Respuesta:</strong> vuelve por el mismo camino con el XP ganado, los récords y las insignias nuevas, y la app muestra la celebración con la mascota.</li>
+        </ol>
+        <div class="callout">
+          <p><strong>Si no hay internet en el paso 1,</strong> la sesión queda en la cola local del celular y se envía sola cuando vuelve la conexión.</p>
+          <p><strong>Si se cae la base de datos en el paso 6,</strong> la transacción no se confirma, el servidor responde un error 503 claro (sin detalles internos), el log registra la falla y Kubernetes saca al servicio del tráfico hasta que la base vuelva.</p>
+        </div>
+      </div>
+
+      <!-- ---------- Pruebas y despliegue ---------- -->
+      <div class="sub" id="t-pruebas" data-unit>
+        <h3>Pruebas, calidad y despliegue</h3>
+        <p class="lead">Cada cambio pasa por 227 pruebas automáticas del backend y 78 de la app antes de desplegarse, y se despliega con una imagen versionada que se puede revertir en un minuto.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tipo de prueba</th><th>Cuántas</th><th>Qué verifican</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Backend (<code>npm test</code>, con <code>node:test</code>)</td><td class="num">227</td><td>Levantan de verdad el gateway y los 4 servicios contra una MariaDB de prueba y hacen peticiones HTTP reales: login, 2FA, sesión única, permisos, inyección SQL, XSS, IDOR, JWT manipulado, pagos, retos, duelos, IA (con un modelo falso), analítica</td></tr>
+              <tr><td class="k">Estadística</td><td>50 (dentro de las 227)</td><td>Comparan cada resultado con scipy 1.18</td></tr>
+              <tr><td class="k">App (<code>flutter test</code>)</td><td class="num">78</td><td>Conteo de repeticiones de la cámara, cliente de la API, formatos, poses y avatares</td></tr>
+              <tr><td class="k">Análisis de la app</td><td><code>flutter analyze</code></td><td>Sin advertencias</td></tr>
+              <tr><td class="k">Seguridad externa</td><td>ZAP, MobSF, OSV-Scanner, Trivy</td><td><a href="#seguridad">Ver la sección de seguridad</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Flujo de trabajo</h4>
+        <ol>
+          <li>Se programa y se prueba en local con Docker Desktop (<code>overlays/local</code>), que usa los mismos YAML que Azure.</li>
+          <li><code>npm test</code>, <code>flutter analyze</code> y <code>flutter test</code> tienen que pasar.</li>
+          <li>Se construye la imagen con una etiqueta nueva y se sube a GitHub Container Registry.</li>
+          <li><code>kubectl apply</code> actualiza Azure sin apagar la app.</li>
+          <li>Si algo sale mal, se vuelve a la etiqueta anterior y se aplica de nuevo.</li>
+          <li>La APK se compila firmada con la dirección de Azure y se instala en los celulares.</li>
+        </ol>
+        <div class="code-block"><pre><span class="c"># Antes de cada versión (tienen que pasar)</span>
+npm test
+flutter analyze
+flutter test</pre></div>
+        <p><strong>Versiones a la fecha:</strong> backend 1.10.0 y app 0.10.0. El código está en GitHub (<code>0kabeee/playfit</code>); las llaves y secretos nunca se suben.</p>
+      </div>
+
+      <!-- ---------- Costos ---------- -->
+      <div class="sub" id="t-costos" data-unit>
+        <h3>Costos y operación con $0</h3>
+        <p class="lead">PlayFit no cuesta dinero al equipo: lo único que consume crédito es la máquina del nodo y sus discos, y eso lo cubre Azure for Students.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Recurso</th><th>Plan</th><th>Costo para el equipo</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Plano de control de AKS</td><td>Nivel Free</td><td>$0</td></tr>
+              <tr><td class="k">Nodo (máquina virtual serie B)</td><td>Crédito de Azure for Students</td><td>$0; deja de consumir con <code>az aks stop</code></td></tr>
+              <tr><td class="k">4 discos (9 GiB en total), balanceador e IP públicas</td><td>Crédito de Azure for Students</td><td>$0; consumen poco aunque el clúster esté apagado</td></tr>
+              <tr><td class="k">Certificado HTTPS</td><td>Let's Encrypt</td><td>Gratis</td></tr>
+              <tr><td class="k">Dominio</td><td>Subdominio de Azure (<code>cloudapp.azure.com</code>)</td><td>Gratis</td></tr>
+              <tr><td class="k">Gemini</td><td>Capa gratuita (por eso los límites diarios)</td><td>Gratis</td></tr>
+              <tr><td class="k">Brevo (correo), Firebase (push), Wompi sandbox, GitHub</td><td>Planes gratuitos</td><td>Gratis</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Operación diaria</h4>
+        <div class="code-block"><pre><span class="c"># Encender y apagar (para no gastar crédito cuando no se usa)</span>
+az aks start
+az aks stop
+<span class="c"># Ver el estado</span>
+kubectl get pods -n playfit
+<span class="c"># y abrir: https://playfit-usb.chilecentral.cloudapp.azure.com/health</span>
+<span class="c"># Ver errores de un servicio</span>
+kubectl logs -n playfit deploy/&lt;servicio&gt;
+<span class="c"># Respaldos: automáticos a las 3:00 a. m.</span></pre></div>
+        <p><strong>Si PlayFit creciera:</strong> se agregan nodos (<code>az aks scale</code>), se sube el número de copias de cada servicio y la base pasa a Azure Database for MariaDB/MySQL administrada. El código no cambia, porque ya está separado en servicios sin estado.</p>
+      </div>
+
+      <!-- ---------- Preguntas probables (tabla del PDF) ---------- -->
+      <div class="sub" id="t-preguntas" data-unit>
+        <h3>Preguntas probables del jurado</h3>
+        <p class="lead">Respuestas cortas que cualquier integrante debe poder dar sin mirar notas.</p>
+        <p class="muted small">Tabla tal como aparece en el documento. El <a href="#preguntas">banco de preguntas</a> amplía estas respuestas por bloque.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Pregunta</th><th>Respuesta</th></tr></thead>
+            <tbody>
+              <tr><td class="k" style="white-space:normal">¿Por qué microservicios para un equipo de 4?</td><td>Para aislar los datos de salud (solo un servicio tiene la llave), que una falla en IA o pagos no tumbe el registro de entrenamientos, escalar por partes y trabajar en paralelo. El costo extra es cero porque todo corre en un solo nodo.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Por qué Kubernetes y no un servidor simple?</td><td>Reinicia solo lo que falla, actualiza sin apagar, el firewall interno es declarativo y todo el despliegue está en código. Con Azure for Students el plano de control es gratis.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Por qué no hay versión web?</td><td>El uso es en el gimnasio con el celular y la cámara cuenta repeticiones con ML Kit en el teléfono. Las pruebas pensadas para navegador se aplicaron al token, que es el equivalente.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Cómo protegen los datos de salud?</td><td>AES-256-GCM en la base, la llave está solo en un Secret de Kubernetes, nadie del personal puede leerlos y la IA solo recibe códigos de banderas.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Qué pasa si roban la base de datos?</td><td>Verían contraseñas en bcrypt, salud cifrada, secretos 2FA cifrados y tokens en SHA-256. Lo único legible serían correos, nombres y datos de entrenamiento.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Y si roban un token?</td><td>Dura 15 minutos, la sesión se puede cerrar al instante y la sesión única impide usarlo en paralelo desde otro celular.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿La cámara graba al usuario?</td><td>No. El video se procesa en el celular y solo se envía el número de repeticiones.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Qué tan preciso es el conteo?</td><td>Usa ángulos de las articulaciones con dos umbrales para no contar temblores. La precisión hay que reportarla con la prueba manual (series contadas a mano contra la app).</td></tr>
+              <tr><td class="k" style="white-space:normal">¿La IA puede dar un consejo peligroso?</td><td>Tiene prohibido diagnosticar, las señales de alarma se responden sin IA y todo lo que propone se valida en el servidor y pide confirmación.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Los datos de la analítica son reales?</td><td>Son sintéticos y están marcados así. Validan que el cálculo está bien (coincide con scipy); el piloto real se importa con las encuestas.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿La app causa que entrenen más?</td><td>No se puede afirmar: no hay grupo control. Se reporta como asociación.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Cómo saben que la estadística está bien?</td><td>50 comprobaciones contra scipy, el mismo motor del notebook.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Qué pasa si se cae la base de datos?</td><td>La app muestra un aviso claro, lo registrado sin conexión se guarda en el celular, el log registra el error y Kubernetes saca el servicio hasta que vuelva.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Cómo cumplen la Ley 1581?</td><td>Consentimientos separados y revocables, con el texto exacto guardado como prueba; derecho a borrar la cuenta; datos de salud cifrados; mínimos datos en rankings.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Cuánto cuesta mantenerla?</td><td>$0: crédito de Azure for Students y capas gratuitas. El clúster se apaga cuando no se usa.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Qué parte es de Azure y qué parte es suya?</td><td>Azure pone la máquina, la red, el balanceador, las IP y los discos. Todo lo que corre adentro (los 9 componentes, el firewall interno, el HTTPS) lo definieron ustedes en YAML.</td></tr>
+              <tr><td class="k" style="white-space:normal">¿Usaron IA para desarrollar?</td><td>Decírselo con transparencia: qué se hizo con ayuda de IA (código asistido, ilustraciones con Gemini) y qué decidió y validó el equipo.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---------- Límites (enlace) ---------- -->
+      <div class="sub" id="t-limites" data-unit>
+        <h3>Límites honestos y trabajo futuro</h3>
+        <p class="lead">Decir los límites antes de que los pregunten muestra criterio de ingeniería.</p>
+        <p><a class="jump" href="#limites">→ Ver la tabla Límite / Por qué existe / Siguiente paso</a></p>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         BANCO DE PREGUNTAS (se genera desde el arreglo PREGUNTAS)
+         ================================================================= -->
+    <section class="main-sec" id="preguntas">
+      <div class="sec-head">
+        <div class="kicker">Banco de preguntas</div>
+        <h2>Preguntas y respuestas del jurado</h2>
+        <p class="muted small" style="margin:0">Todas las preguntas con su respuesta corta, listas para leer. Filtra por bloque o usa el buscador.</p>
+      </div>
+
+      <!-- Filtros -->
+      <div class="chips" id="chips-bloque" role="group" aria-label="Filtrar por bloque"></div>
+      <div class="filter-row">
+        <button class="chip warn" id="filtro-confirmar" aria-pressed="false">Solo <span class="confirmar" style="margin:0 0 0 .3em">Confirmar</span><span class="n" id="n-confirmar"></span></button>
+        <a class="btn" href="#simulacro">Ir al simulacro</a>
+      </div>
+
+      <div id="q-list"></div>
+      <div class="empty" id="q-empty">No hay preguntas con estos filtros o esta búsqueda.</div>
+    </section>
+
+    <!-- =================================================================
+         SEGURIDAD: 7 CAPAS + PRUEBAS + P1 a P20
+         ================================================================= -->
+    <section class="main-sec" id="seguridad">
+      <div class="sec-head">
+        <div class="kicker">Seguridad</div>
+        <h2>7 capas y las 20 pruebas del profesor</h2>
+      </div>
+
+      <div data-unit>
+        <p class="lead">Para llegar a un dato hay que pasar por 7 capas, y cada una funciona aunque otra falle.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Capa</th><th>Controles</th></tr></thead>
+            <tbody>
+              <tr><td class="k">1. Red de Azure</td><td>Grupo de seguridad (NSG) que solo abre 80 y 443; la base de datos no tiene IP pública</td></tr>
+              <tr><td class="k">2. Transporte</td><td>HTTPS con certificado de Let's Encrypt renovado solo; HTTP redirige a HTTPS; HSTS de 1 año; se oculta la cabecera Server</td></tr>
+              <tr><td class="k">3. Kubernetes</td><td>Firewall interno que niega todo por defecto (NetworkPolicies); contenedores sin root, sin escalar privilegios y con disco de solo lectura; secretos fuera del código</td></tr>
+              <tr><td class="k">4. Gateway</td><td>Helmet (cabeceras seguras), 300 peticiones por minuto por IP, 10 intentos de login cada 15 minutos, cuerpos de máximo 1 MB, límite de 15 s; la IP real la pone Caddy y no se puede falsificar</td></tr>
+              <tr><td class="k">5. Autenticación</td><td>bcrypt, tokens cortos, 2FA, sesión única, bloqueo por intentos, cierre por inactividad (<a href="#t-seguridad">detalle</a>)</td></tr>
+              <tr><td class="k">6. Autorización</td><td>Permisos finos por rol, roles extra y funciones sueltas por persona; cada endpoint exige su permiso; reglas contra la escalada de privilegios; auditoría</td></tr>
+              <tr><td class="k">7. Datos</td><td>AES-256-GCM para la salud; SHA-256 para tokens y códigos; consulta parametrizada en todo el SQL; consentimientos con prueba; derecho a borrar la cuenta</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div data-unit>
+        <h3>Pruebas de seguridad realizadas</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tipo</th><th>Herramienta</th><th>Resultado</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Análisis estático del código (SAST)</td><td>Revisión de SQL, entradas, JWT, IDOR y cabeceras</td><td>Hallazgos corregidos, en el informe</td></tr>
+              <tr><td class="k">Análisis dinámico (DAST)</td><td>OWASP ZAP contra la API</td><td>Sin hallazgos altos</td></tr>
+              <tr><td class="k">Dependencias (SCA)</td><td>OSV-Scanner, Trivy, npm audit</td><td>Sin vulnerabilidades altas abiertas</td></tr>
+              <tr><td class="k">App móvil</td><td>MobSF sobre la APK</td><td>58/100, sin hallazgos altos</td></tr>
+              <tr><td class="k">Pruebas automáticas</td><td>227 pruebas del backend, entre ellas inyección SQL, XSS, caracteres especiales, IDOR y manipulación de JWT</td><td>Todas pasan</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div data-unit>
+        <h3>Las 20 pruebas del profesor (P1 a P20)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Prueba</th><th>Cómo la cumple PlayFit</th></tr></thead>
+            <tbody>
+              <tr><td class="k">P1 y P18</td><td>Persistencia y cierre de sesión</td><td>Con el token en PowerShell: funciona, se cierra sesión y el mismo token responde <code>SESION_CERRADA</code></td></tr>
+              <tr><td class="k">P2</td><td>15 caracteres especiales en el correo</td><td>Rechazado en la app y en el servidor, sin filtrar datos internos</td></tr>
+              <tr><td class="k">P3</td><td>Olvidé mi contraseña</td><td>Código al correo; restablecer desbloquea y cierra todas las sesiones</td></tr>
+              <tr><td class="k">P4</td><td>5 contraseñas incorrectas</td><td>Bloqueo de 15 minutos por cuenta</td></tr>
+              <tr><td class="k">P5</td><td>Rol nuevo para 2 usuarios con permisos distintos</td><td>Rol configurable + funciones extra por persona</td></tr>
+              <tr><td class="k">P6</td><td>Correo duplicado</td><td>"Ya existe una cuenta con ese correo"</td></tr>
+              <tr><td class="k">P7</td><td>Contraseña de 1 carácter</td><td>Rechazada; el admin genera una temporal en vez de escribirla</td></tr>
+              <tr><td class="k">P8</td><td>2 roles al mismo usuario</td><td>Rol principal + roles adicionales; aplica sin volver a iniciar sesión</td></tr>
+              <tr><td class="k">P9</td><td>Auditoría</td><td>Registro de cambios de rol, accesos, contraseñas temporales y configuración</td></tr>
+              <tr><td class="k">P10 y P11</td><td>Reducir y aumentar la inactividad</td><td>Seguridad de sesiones, configurable desde el panel</td></tr>
+              <tr><td class="k">P12 y P13</td><td>"1 al 15" como contraseña</td><td>En el login: incorrecta; al registrarse: "no puede tener solo números"</td></tr>
+              <tr><td class="k">P14</td><td>Copiar "ABC" del campo de contraseña</td><td>Copiar y cortar bloqueados</td></tr>
+              <tr><td class="k">P15</td><td>Subir un .exe renombrado a .pdf</td><td>No aplica: PlayFit no tiene carga de archivos y el servidor solo acepta JSON</td></tr>
+              <tr><td class="k">P16</td><td>Mismo usuario en dos dispositivos</td><td>Sesión única, con salida por código al correo</td></tr>
+              <tr><td class="k">P17</td><td>Fallo forzado y log de errores</td><td>La base se apaga: la app muestra un aviso claro y el log registra el error (versión 1.9.1 o superior)</td></tr>
+              <tr><td class="k">P19</td><td>Datos cifrados</td><td>bcrypt, AES (<code>v1:</code>), secreto 2FA cifrado y hashes SHA-256, vistos en HeidiSQL</td></tr>
+              <tr><td class="k">P20</td><td>Cambiar contraseña y correo desde el perfil</td><td>Código al correo nuevo y aviso al anterior</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted small">P18 aparece junto con P1 en el documento ("P1 y P18").</p>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         HIPÓTESIS Y ANALÍTICA
+         ================================================================= -->
+    <section class="main-sec" id="hipotesis">
+      <div class="sec-head">
+        <div class="kicker">Hipótesis y analítica</div>
+        <h2>Lo que se probó y cómo decirlo</h2>
+      </div>
+
+      <div class="callout warn" data-unit>
+        <p><strong>Datos sintéticos.</strong> 30 participantes sintéticos, marcados como tales, que validan el procedimiento y no prueban que PlayFit funcione. Sin grupo control solo se puede hablar de <strong>asociación</strong>, no de causa. El piloto real se importa con las encuestas mediante un script.</p>
+      </div>
+
+      <div class="hyp-grid" data-unit>
+        <article class="card hyp">
+          <div class="h-id">H₁</div>
+          <p class="h-claim">Más sesiones por semana con PlayFit que antes.</p>
+          <dl>
+            <dt>Prueba</dt><dd>Wilcoxon pareado unilateral</dd>
+            <dt>Resultado</dt><dd>p &lt; 0,001; 22 de 30 aumentaron su frecuencia</dd>
+          </dl>
+          <div class="dots" role="img" aria-label="22 de 30 participantes sintéticos aumentaron su frecuencia">
+            <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+            <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+            <i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="legend"><span><i class="on"></i>aumentaron (22)</span><span><i></i>resto (8)</span></div>
+          <p></p>
+          <span class="verdict yes">Significativa</span>
+        </article>
+        <article class="card hyp">
+          <div class="h-id">H₂</div>
+          <p class="h-claim">Más del 60 % completa retos.</p>
+          <dl>
+            <dt>Prueba</dt><dd>Binomial con intervalo de Clopper-Pearson</dd>
+            <dt>Resultado</dt><dd>p = 0,291</dd>
+          </dl>
+          <span class="verdict no">No significativa</span>
+        </article>
+        <article class="card hyp">
+          <div class="h-id">H₃</div>
+          <p class="h-claim">SUS mayor a 68.</p>
+          <dl>
+            <dt>Resultado</dt><dd>p = 0,004</dd>
+          </dl>
+          <span class="verdict yes">Significativa</span>
+        </article>
+      </div>
+
+      <div class="card" data-unit>
+        <h3>Corrección por múltiples pruebas: Holm</h3>
+        <p>Sí se corrigió, con la corrección de Holm. <strong>H₁ y H₃ siguen significativas, y H₂ no.</strong></p>
+        <h4>¿Por qué Wilcoxon?</h4>
+        <p>Datos pareados (antes y con PlayFit) y no hay garantía de normalidad. Lo respaldan con Shapiro-Wilk, y la t pareada se corrió como sensibilidad.</p>
+        <h4>¿Qué más calcularon?</h4>
+        <p>Friedman (evolución semanal), bootstrap para intervalos y descriptiva: perfil, causas de abandono, módulos usados, retos y series y kilos por semana.</p>
+        <h4>¿Cómo saben que la estadística está bien?</h4>
+        <p>50 comprobaciones contra scipy (1.18), el mismo motor del notebook de Colab. La estadística está programada en JavaScript dentro del panel › Analítica y se exporta a CSV para volver a correr el notebook con las cifras exactas.</p>
+      </div>
+
+      <div class="card" data-unit>
+        <h3>Cómo decirlo ante el jurado</h3>
+        <ul>
+          <li>"¿No es circular usar datos sintéticos?" → Sí, y lo dicen ustedes primero: validan el procedimiento, no la efectividad.</li>
+          <li>"¿La app causa que entrenen más?" → No se puede afirmar: no hay grupo control. Se reporta como asociación.</li>
+          <li>Siguiente paso: piloto real con encuestas de ingreso y cierre, ya importables con un script, y diseño con grupo control para hablar de causa.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         LÍMITES Y TRABAJO FUTURO
+         ================================================================= -->
+    <section class="main-sec" id="limites">
+      <div class="sec-head">
+        <div class="kicker">Límites y trabajo futuro</div>
+        <h2>Límites honestos</h2>
+      </div>
+      <div data-unit>
+        <p class="lead">Decir los límites antes de que los pregunten muestra criterio de ingeniería; estos son los que hoy tiene PlayFit.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Límite</th><th>Por qué existe</th><th>Siguiente paso</th></tr></thead>
+            <tbody>
+              <tr><td class="k" style="white-space:normal">Analítica con datos sintéticos</td><td>No hubo tiempo para un piloto real de 6 semanas</td><td>Piloto real con encuestas de ingreso y cierre, ya importables con un script</td></tr>
+              <tr><td class="k" style="white-space:normal">Sin grupo control</td><td>Mismo motivo</td><td>Diseño con grupo control para hablar de causa</td></tr>
+              <tr><td class="k" style="white-space:normal">Solo Android</td><td>iOS requiere una Mac para compilar</td><td>Configurar iOS (Flutter ya lo permite)</td></tr>
+              <tr><td class="k" style="white-space:normal">Sin versión web del panel</td><td>Se priorizó el celular</td><td>Panel web para el administrador</td></tr>
+              <tr><td class="k" style="white-space:normal">Un solo nodo y una sola copia de la base</td><td>Presupuesto $0</td><td>Más nodos y base administrada con réplicas</td></tr>
+              <tr><td class="k" style="white-space:normal">Sin prueba de carga formal (p95 &lt; 2 s)</td><td>Pendiente</td><td>Prueba con k6 contra Azure</td></tr>
+              <tr><td class="k" style="white-space:normal">Sin integración continua automática</td><td>Las pruebas se corren a mano antes de cada versión</td><td>GitHub Actions con pruebas y análisis de dependencias</td></tr>
+              <tr><td class="k" style="white-space:normal">Correos pueden llegar a spam</td><td>El remitente no tiene SPF/DKIM propios</td><td>Dominio propio con SPF y DKIM</td></tr>
+              <tr><td class="k" style="white-space:normal">Nutrición solo informativa</td><td>Se priorizó el entrenamiento</td><td>Registro de comidas y calorías estimadas</td></tr>
+              <tr><td class="k" style="white-space:normal">Precisión de la cámara sin medir formalmente</td><td>Pendiente</td><td>Prueba de 10 series contadas a mano frente a la app</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" data-unit>
+        <h3>Otros límites que el banco de preguntas pide reconocer</h3>
+        <ul>
+          <li><strong>Base de datos compartida:</strong> cada servicio usa sus propias tablas, pero comparten el motor (simplicidad y costo). Con más recursos, cada servicio tendría su propia base.</li>
+          <li><strong>Respaldo en el mismo clúster:</strong> la copia diaria está en un disco del mismo clúster. Reconocer el límite y traer, de ser posible, una restauración probada.</li>
+          <li><strong>JWT con HS256:</strong> todos los servicios comparten la clave; RS256 es la mejora.</li>
+          <li><strong>Dependencia de Gemini:</strong> rutinas y asistente dependen de Gemini; Groq como respaldo es trabajo futuro.</li>
+          <li><strong>Detector de alarmas por palabras:</strong> puede tener falsos negativos. Si el filtro de salida con «no sustituye a un profesional» (RF-19) no está implementado, presentarlo como pendiente.</li>
+          <li><strong>Datos autorreportados:</strong> el servidor valida rangos y limita el XP diario, pero no puede verificar que el peso sea real.</li>
+          <li><strong>Transferencia internacional</strong> (Gemini, Brevo y Firebase): hay que verificar las condiciones.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         MODO SIMULACRO
+         ================================================================= -->
+    <section class="main-sec" id="simulacro">
+      <div class="sec-head">
+        <div class="kicker">Modo simulacro</div>
+        <h2>Pregunta al azar</h2>
+        <p class="muted small" style="margin:0">Responde en voz alta antes de ver la respuesta.</p>
+      </div>
+      <div class="filter-row">
+        <label>Bloque
+          <select id="sim-bloque"></select>
+        </label>
+      </div>
+      <div class="card sim-card" id="sim-card" aria-live="polite">
+        <div class="sim-meta" id="sim-meta"></div>
+        <p class="sim-q" id="sim-q"></p>
+        <div class="sim-a" id="sim-a"></div>
+        <div class="sim-btns">
+          <button class="btn" id="sim-ver">Ver respuesta</button>
+          <button class="btn primary" id="sim-sig">Siguiente</button>
+        </div>
+        <div class="sim-count" id="sim-count"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<button class="btn to-top" id="to-top" aria-label="Volver arriba">↑</button>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* =======================================================================
+   ██  DATOS EDITABLES  ██
+   Aquí el equipo puede agregar, corregir o quitar contenido sin tocar
+   el resto del código.
+   ======================================================================= */
+
+/* Banco de preguntas.
+   - bloque:    nombre del bloque (los chips de filtro se crean solos).
+   - pregunta:  texto de la pregunta.
+   - respuesta: respuesta corta. Escribe [Confirmar] para marcarla en amarillo.
+                Texto entre `comillas invertidas` se muestra como código. */
+const PREGUNTAS = [
+  // ---------------- Problema y alcance ----------------
+  { bloque: "Problema y alcance",
+    pregunta: "¿Qué problema resuelve PlayFit?",
+    respuesta: "Que los estudiantes de la USB abandonen el gimnasio por entrenar solos y sin seguimiento. Responde con squads, retos, duelos, rankings, asistente con IA y conteo de repeticiones con cámara." },
+  { bloque: "Problema y alcance",
+    pregunta: "¿Cuál es el aporte frente a Strava o apps de gimnasios?",
+    respuesta: "La combinación de lo social y lo medible en una sola app con IA, y que no depende de un gimnasio concreto." },
+  { bloque: "Problema y alcance",
+    pregunta: "¿Por qué solo Android y sin versión web?",
+    respuesta: "El uso es en el gimnasio con el celular, y la cámara con ML Kit corre en el teléfono. iOS exige una Mac para compilar, y Flutter lo permite a futuro." },
+  { bloque: "Problema y alcance",
+    pregunta: "¿Qué objetivos del proyecto cumplieron y cómo?",
+    respuesta: "El documento menciona un «objetivo 3» (analítica). Cada integrante debe saber el objetivo general y los específicos de memoria, y qué evidencia tiene cada uno." },
+
+  // ---------------- Arquitectura, Azure y Kubernetes ----------------
+  { bloque: "Arquitectura, Azure y Kubernetes",
+    pregunta: "¿Por qué microservicios para un equipo de 4?",
+    respuesta: "Aislar los datos de salud (solo clinical tiene la llave), que una falla en IA o pagos no tumbe el registro de entrenamientos, escalar por partes y trabajar en paralelo. Todo corre en un solo nodo, así que no cuesta más." },
+  { bloque: "Arquitectura, Azure y Kubernetes",
+    pregunta: "Si los microservicios comparten una sola base de datos, ¿siguen siendo independientes?",
+    respuesta: "Pregunta difícil. La respuesta honesta es que cada servicio usa sus propias tablas, pero comparten el motor. Fue una decisión de simplicidad y costo (presupuesto $0). Con más recursos, cada servicio tendría su propia base." },
+  { bloque: "Arquitectura, Azure y Kubernetes",
+    pregunta: "¿Por qué Kubernetes en vez de un servidor simple?",
+    respuesta: "Reinicia lo que falla, actualiza sin apagar la app (rolling update), el firewall interno es declarativo y todo el despliegue está en código. El plano de control de AKS es gratis en el nivel Free." },
+  { bloque: "Arquitectura, Azure y Kubernetes",
+    pregunta: "¿Qué es suyo y qué es de Azure?",
+    respuesta: "Azure pone máquina, red, balanceador, IP y discos. Los 9 componentes, el firewall interno y el HTTPS los definieron ustedes en YAML." },
+  { bloque: "Arquitectura, Azure y Kubernetes",
+    pregunta: "¿Por qué una sola imagen Docker para 5 componentes?",
+    respuesta: "Evita versiones mezcladas: se construye una vez y cada Deployment arranca un servicio distinto." },
+  { bloque: "Arquitectura, Azure y Kubernetes",
+    pregunta: "¿Cómo se despliega una versión nueva y cómo se revierte?",
+    respuesta: "`docker build`/`push` con etiqueta, cambio de `newTag` en Kustomize y `kubectl apply -k`. Para revertir, se vuelve a la etiqueta anterior (aproximadamente un minuto)." },
+  { bloque: "Arquitectura, Azure y Kubernetes",
+    pregunta: "¿Para qué sirve n8n?",
+    respuesta: "Avisos a administradores (pagos aprobados, soporte transferido) sin programar. Solo los servicios pueden llamarlo." },
+  { bloque: "Arquitectura, Azure y Kubernetes",
+    pregunta: "¿Qué pasa cuando se acabe el crédito de Azure for Students?",
+    respuesta: "Es la pregunta de sostenibilidad. Respuesta: el clúster se apaga cuando no se usa (`az aks stop`) y el código queda en GitHub y es reconstruible en otra cuenta en minutos, porque la infraestructura es código. [Confirmar] hasta cuándo dura su crédito." },
+
+  // ---------------- Base de datos ----------------
+  { bloque: "Base de datos",
+    pregunta: "¿Por qué SQL relacional?",
+    respuesta: "Los datos están muy relacionados (usuario → squad → reto → participación) y se necesitan transacciones: una sesión guarda series, XP, racha, récords y avance de retos en una sola operación, o no guarda nada. Además el tutor exigía SQL en la nube." },
+  { bloque: "Base de datos",
+    pregunta: "¿Por qué MariaDB y no Azure Database administrada?",
+    respuesta: "Presupuesto $0. Como los servicios no guardan estado, migrar a una base administrada no cambia el código." },
+  { bloque: "Base de datos",
+    pregunta: "¿Cómo se respalda y se ha probado restaurar?",
+    respuesta: "Un CronJob hace una copia diaria a las 3:00 a. m. en un disco de 2 GiB. Ojo: está en el mismo clúster. Si les preguntan por restaurar o por copias fuera del clúster, reconozcan el límite y traigan, de ser posible, una restauración probada." },
+  { bloque: "Base de datos",
+    pregunta: "¿Cómo se accede a la base?",
+    respuesta: "No tiene IP pública. Se abre un túnel temporal con `kubectl port-forward`, que exige credenciales del clúster." },
+
+  // ---------------- Seguridad ----------------
+  { bloque: "Seguridad",
+    pregunta: "¿Cómo explican las 7 capas?",
+    respuesta: "Red de Azure (NSG solo 80 y 443), HTTPS, Kubernetes (firewall interno, sin root), gateway (límites), autenticación, autorización y datos cifrados. Cada capa funciona aunque otra falle." },
+  { bloque: "Seguridad",
+    pregunta: "¿Cómo manejan las contraseñas y los tokens?",
+    respuesta: "Contraseñas con bcrypt y sal. Access token JWT de 15 minutos y refresh token de 7 días con rotación: si alguien reusa uno viejo, se revoca toda la familia. En cada petición se revisa en la base que la sesión siga viva, así que cerrar sesión invalida el token al instante." },
+  { bloque: "Seguridad",
+    pregunta: "¿Por qué JWT con HS256 y no RS256?",
+    respuesta: "Con HS256, todos los servicios comparten una clave secreta (por la librería común). RS256 permitiría que los servicios solo verifiquen. Para este alcance, una clave en un Secret de Kubernetes es suficiente, pero reconozcan que RS256 es la mejora." },
+  { bloque: "Seguridad",
+    pregunta: "¿Qué hacen contra la fuerza bruta?",
+    respuesta: "Dos niveles: 10 intentos de login por 15 minutos por IP en el gateway, y 5 contraseñas incorrectas bloquean la cuenta 15 minutos aunque se cambie de IP (el conteo está en la base por correo). Además comparan contra un hash falso si el correo no existe, para que el tiempo de respuesta no revele qué correos están registrados." },
+  { bloque: "Seguridad",
+    pregunta: "¿Cómo previenen SQL injection y XSS?",
+    respuesta: "Consultas parametrizadas en todo el SQL (Sequelize), validación de campos en el servidor y pruebas automáticas de inyección SQL, XSS, IDOR y JWT manipulado." },
+  { bloque: "Seguridad",
+    pregunta: "¿Y la escalada de privilegios?",
+    respuesta: "Nadie se cambia sus propios permisos, solo puede dar lo que ya tiene, solo un administrador toca a otro administrador, y todo queda en la auditoría." },
+  { bloque: "Seguridad",
+    pregunta: "¿Qué pasa si les roban la base de datos?",
+    respuesta: "Verían contraseñas en bcrypt, salud cifrada con AES-256-GCM, secretos 2FA cifrados y tokens en SHA-256. Legibles quedarían correos, nombres y datos de entrenamiento." },
+  { bloque: "Seguridad",
+    pregunta: "¿Y si roban un token?",
+    respuesta: "Dura 15 minutos, la sesión se cierra al instante y la sesión única impide usarlo en paralelo." },
+  { bloque: "Seguridad",
+    pregunta: "¿Por qué MobSF dio 58/100?",
+    respuesta: "Tenga la respuesta preparada: «Sin hallazgos altos; la puntuación refleja hallazgos medios o informativos típicos de una APK, y los documentamos en el informe». [Confirmar] cuáles fueron." },
+  { bloque: "Seguridad",
+    pregunta: "¿Qué pasó en la prueba del .exe renombrado como .pdf (P15)?",
+    respuesta: "No aplica: PlayFit no tiene carga de archivos y el servidor solo acepta JSON." },
+  { bloque: "Seguridad",
+    pregunta: "¿Qué pasó con el correo en spam?",
+    respuesta: "El remitente no tiene SPF/DKIM propios. Es un límite conocido, y la solución es un dominio propio." },
+
+  // ---------------- Inteligencia artificial ----------------
+  { bloque: "Inteligencia artificial",
+    pregunta: "¿Qué ve el modelo?",
+    respuesta: "Solo banderas de salud en código (por ejemplo, lesión de rodilla), nunca el texto que escribió la persona, su nombre ni su correo, más las preferencias que pidió recordar. Gemini se llama solo desde el servidor." },
+  { bloque: "Inteligencia artificial",
+    pregunta: "¿Qué pasa con la privacidad en la capa gratuita de Gemini?",
+    respuesta: "Verifiquen los términos: en las capas gratuitas Google puede usar los datos para mejorar sus productos. Su mitigación es que no se envían datos personales ni clínicos, solo códigos." },
+  { bloque: "Inteligencia artificial",
+    pregunta: "¿Cómo evitan que la IA invente acciones?",
+    respuesta: "Las funciones que cambian datos solo proponen, la app muestra una tarjeta y nada se guarda hasta tocar Confirmar. El servidor valida todo como si viniera de la app, y si el modelo dice «ya registré» sin haber llamado a la función, lo corrige." },
+  { bloque: "Inteligencia artificial",
+    pregunta: "¿Qué pasa con la inyección de instrucciones (prompt injection)?",
+    respuesta: "El modelo no tiene poder directo: solo propone 5 funciones, el servidor valida rangos y catálogo, y pide confirmación." },
+  { bloque: "Inteligencia artificial",
+    pregunta: "¿La IA puede dar un consejo peligroso?",
+    respuesta: "Tiene prohibido diagnosticar y recomendar medicamentos. Las señales de alarma (dolor de pecho, desmayo, falta de aire) se responden sin IA, y el servidor quita ejercicios contraindicados por las banderas del usuario. Si el filtro de salida con «no sustituye a un profesional» (RF-19) no está implementado, preséntenlo como pendiente. El detector de alarmas es por palabras, así que puede tener falsos negativos." },
+  { bloque: "Inteligencia artificial",
+    pregunta: "¿Qué pasa si el proveedor de IA falla o cambia?",
+    respuesta: "Las rutinas y el asistente dependen de Gemini. Groq como respaldo es trabajo futuro." },
+
+  // ---------------- Cámara y app móvil ----------------
+  { bloque: "Cámara y app móvil",
+    pregunta: "¿Cómo cuenta repeticiones la cámara?",
+    respuesta: "ML Kit detecta 33 puntos del cuerpo en el celular, la app calcula el ángulo de la articulación con trigonometría, y una repetición cuenta cuando baja de un umbral y vuelve a subir de otro (dos umbrales evitan contar un temblor). Si no ve bien el cuerpo, avisa en lugar de contar mal." },
+  { bloque: "Cámara y app móvil",
+    pregunta: "¿La cámara graba al usuario?",
+    respuesta: "No. Se procesa en el teléfono y al servidor solo llega el número de repeticiones." },
+  { bloque: "Cámara y app móvil",
+    pregunta: "¿Qué tan precisa es?",
+    respuesta: "No está medida formalmente. Si hacen la prueba esta noche, llévenla. Si no, digan que es trabajo pendiente con un método ya definido." },
+  { bloque: "Cámara y app móvil",
+    pregunta: "¿Qué pasa sin internet?",
+    respuesta: "La sesión se guarda en una cola local y se envía sola al volver la señal. [Confirmar] si el servidor evita duplicados cuando reintenta (idempotencia)." },
+  { bloque: "Cámara y app móvil",
+    pregunta: "¿Cómo se guardan los tokens en el celular?",
+    respuesta: "En `flutter_secure_storage` (Android Keystore). Los campos de contraseña bloquean copiar y cortar." },
+
+  // ---------------- Analítica e hipótesis ----------------
+  { bloque: "Analítica e hipótesis",
+    pregunta: "¿Qué hipótesis probaron y cómo?",
+    respuesta: "H₁: más sesiones por semana con PlayFit que antes (Wilcoxon pareado unilateral, p < 0,001; 22 de 30 aumentaron su frecuencia). H₂: más del 60 % completa retos (binomial con intervalo de Clopper-Pearson, p = 0,291, no significativa). H₃: SUS mayor a 68 (p = 0,004)." },
+  { bloque: "Analítica e hipótesis",
+    pregunta: "¿Por qué Wilcoxon?",
+    respuesta: "Datos pareados (antes y con PlayFit) y no hay garantía de normalidad. Lo respaldan con Shapiro-Wilk, y la t pareada se corrió como sensibilidad." },
+  { bloque: "Analítica e hipótesis",
+    pregunta: "¿Corrigieron por múltiples pruebas?",
+    respuesta: "Sí, con la corrección de Holm. H₁ y H₃ siguen significativas, y H₂ no." },
+  { bloque: "Analítica e hipótesis",
+    pregunta: "¿Qué más calcularon?",
+    respuesta: "Friedman (evolución semanal), bootstrap para intervalos y descriptiva: perfil, causas de abandono, módulos usados, retos y series y kilos por semana." },
+  { bloque: "Analítica e hipótesis",
+    pregunta: "¿Cómo saben que la estadística está bien?",
+    respuesta: "50 comprobaciones contra scipy, el mismo motor del notebook de Colab." },
+  { bloque: "Analítica e hipótesis",
+    pregunta: "¿No es circular usar datos sintéticos?",
+    respuesta: "Sí, y lo dicen ustedes primero: 30 participantes sintéticos, marcados como tales, que validan el procedimiento y no prueban que PlayFit funcione. Sin grupo control solo se puede hablar de asociación, no de causa. El piloto real se importa con las encuestas mediante un script." },
+
+  // ---------------- Gamificación y producto ----------------
+  { bloque: "Gamificación y producto",
+    pregunta: "¿Por qué estas reglas de XP?",
+    respuesta: "Premian la constancia, no el exceso: XP solo en las 2 primeras sesiones del día, bono de racha a los 7, 14 y 30 días, y duelos medidos con sesiones reales. [Confirmar] si tienen un fundamento teórico (motivación, hábito) para citar." },
+  { bloque: "Gamificación y producto",
+    pregunta: "¿Se pueden hacer trampa los datos autorreportados?",
+    respuesta: "El servidor valida rangos (1 a 200 repeticiones, 0 a 500 kg, máximo 7 días atrás) y limita el XP diario, pero no puede verificar que el peso sea real. Es una limitación de cualquier app de este tipo." },
+  { bloque: "Gamificación y producto",
+    pregunta: "¿Qué privacidad hay en los rankings?",
+    respuesta: "Nombre y solo la inicial del apellido, y las cuentas sintéticas del piloto nunca aparecen." },
+
+  // ---------------- Pruebas, calidad y operación ----------------
+  { bloque: "Pruebas, calidad y operación",
+    pregunta: "¿Cuántas pruebas tienen?",
+    respuesta: "227 del backend (incluyen inyección SQL, XSS, IDOR y JWT manipulado) y 78 de la app, más ZAP, OSV-Scanner, Trivy y MobSF." },
+  { bloque: "Pruebas, calidad y operación",
+    pregunta: "¿Qué no probaron?",
+    respuesta: "Carga formal (meta p95 < 2 s con k6) e integración continua automática. Dilas como trabajo pendiente con herramienta definida." },
+  { bloque: "Pruebas, calidad y operación",
+    pregunta: "¿Cuánto cuesta mantenerla?",
+    respuesta: "$0: Azure for Students y capas gratuitas (Gemini, Brevo, Firebase, Wompi sandbox)." },
+  { bloque: "Pruebas, calidad y operación",
+    pregunta: "¿Qué pasa si se cae un nodo o la base?",
+    respuesta: "Hay un solo nodo y una copia de la base: es un límite del presupuesto. Kubernetes saca el servicio del tráfico, la app muestra un aviso claro y lo registrado sin conexión queda en el celular." },
+
+  // ---------------- Ética, legal y equipo ----------------
+  { bloque: "Ética, legal y equipo",
+    pregunta: "¿Cómo cumplen la Ley 1581?",
+    respuesta: "Consentimientos separados y revocables (datos, salud, cámara, IA), con el texto exacto guardado (SHA-256) como prueba, derecho a borrar la cuenta, salud cifrada y datos mínimos en rankings. Si preguntan por transferencia internacional (Gemini, Brevo y Firebase), reconozcan que hay que verificar las condiciones." },
+  { bloque: "Ética, legal y equipo",
+    pregunta: "¿Usaron IA para desarrollar?",
+    respuesta: "Díganlo con transparencia: código asistido e ilustraciones con Gemini, y qué decidió y validó el equipo." },
+  { bloque: "Ética, legal y equipo",
+    pregunta: "¿Qué aprendió cada uno y qué harían distinto?",
+    respuesta: "Respuesta personal por integrante. Eviten respuestas iguales." }
+];
+
+/* =======================================================================
+   A partir de aquí: lógica de la página (no hace falta tocarla para
+   editar contenido).
+   ======================================================================= */
+(function () {
+  'use strict';
+
+  /* ---------- Utilidades ---------- */
+  const $ = (sel, ctx) => (ctx || document).querySelector(sel);
+  const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const CONFIRMAR_RE = /\[confirmar\]/i;
+
+  // Normaliza para buscar sin tildes ni mayúsculas
+  function normChar(c) { return c.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function norm(s) { return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+
+  // Respuesta → HTML: escapa, `código` y etiqueta [Confirmar]
+  function formatRespuesta(s) {
+    return esc(s)
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\[confirmar\]/gi, '<span class="confirmar">Confirmar</span>');
+  }
+  const textoPlano = (s) => String(s).replace(/`/g, '');
+
+  /* ---------- Almacenamiento seguro (solo para recordar el tema) ---------- */
+  const store = {
+    get(k, def) { try { const v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch (e) { return def; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* sin almacenamiento */ } }
+  };
+  const KEY_TEMA = 'playfit.tema.v1';
+
+  /* ---------- Preparar preguntas ---------- */
+  PREGUNTAS.forEach((q, i) => {
+    q.id = 'q' + (i + 1);
+    q.n = i + 1;
+    q.confirmar = CONFIRMAR_RE.test(q.respuesta);
+  });
+  const BLOQUES = [];
+  PREGUNTAS.forEach((q) => { if (!BLOQUES.includes(q.bloque)) BLOQUES.push(q.bloque); });
+
+  /* ---------- Toast ---------- */
+  let toastT;
+  function toast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => t.classList.remove('show'), 1600);
+  }
+
+  /* ---------- Copiar al portapapeles (con alternativa) ---------- */
+  async function copiar(texto) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(texto); return true; }
+    } catch (e) { /* sigue con la alternativa */ }
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = texto; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* =====================================================================
+     BANCO DE PREGUNTAS: todas a la vista, agrupadas por bloque
+     ===================================================================== */
+  function renderPreguntas() {
+    let html = '';
+    BLOQUES.forEach((b) => {
+      const qs = PREGUNTAS.filter((q) => q.bloque === b);
+      html += `<div class="q-group" data-bloque="${esc(b)}"><h3>${esc(b)} <span class="n">${qs.length}</span></h3>`;
+      qs.forEach((q) => {
+        html += `
+        <article class="q${q.confirmar ? ' has-confirm' : ''}" id="${q.id}" data-unit data-q="${q.id}">
+          <div class="q-head">
+            <span class="q-num">${q.n}</span>
+            <h4 class="q-text">${esc(q.pregunta)}${q.confirmar ? ' <span class="tag-warn">Confirmar</span>' : ''}</h4>
+          </div>
+          <div class="q-body">
+            <p>${formatRespuesta(q.respuesta)}</p>
+            <div class="q-actions"><button class="btn ghost" data-copy>Copiar</button></div>
+          </div>
+        </article>`;
+      });
+      html += '</div>';
+    });
+    $('#q-list').innerHTML = html;
+  }
+
+  $('#q-list').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-copy]');
+    if (!btn) return;
+    const q = PREGUNTAS.find((x) => x.id === btn.closest('.q').dataset.q);
+    const ok = await copiar(q.pregunta + '\n' + textoPlano(q.respuesta));
+    toast(ok ? 'Respuesta copiada' : 'No se pudo copiar');
+  });
+
+  /* =====================================================================
+     FILTROS (bloque y [Confirmar])
+     ===================================================================== */
+  const filtro = { bloque: '', soloConfirmar: false };
+
+  function renderChips() {
+    let html = `<button class="chip" data-bloque="" aria-pressed="true">Todos<span class="n">${PREGUNTAS.length}</span></button>`;
+    BLOQUES.forEach((b) => {
+      const n = PREGUNTAS.filter((q) => q.bloque === b).length;
+      html += `<button class="chip" data-bloque="${esc(b)}" aria-pressed="false">${esc(b)}<span class="n">${n}</span></button>`;
+    });
+    $('#chips-bloque').innerHTML = html;
+    $('#n-confirmar').textContent = PREGUNTAS.filter((q) => q.confirmar).length;
+  }
+  $('#chips-bloque').addEventListener('click', (e) => {
+    const c = e.target.closest('.chip');
+    if (!c) return;
+    filtro.bloque = c.dataset.bloque;
+    $$('.chip', $('#chips-bloque')).forEach((x) => x.setAttribute('aria-pressed', x === c ? 'true' : 'false'));
+    aplicarFiltros();
+  });
+  $('#filtro-confirmar').addEventListener('click', (e) => {
+    filtro.soloConfirmar = !filtro.soloConfirmar;
+    e.currentTarget.setAttribute('aria-pressed', filtro.soloConfirmar ? 'true' : 'false');
+    aplicarFiltros();
+  });
+
+  function pasaFiltro(q) {
+    if (filtro.bloque && q.bloque !== filtro.bloque) return false;
+    if (filtro.soloConfirmar && !q.confirmar) return false;
+    return true;
+  }
+
+  function aplicarFiltros() {
+    PREGUNTAS.forEach((q) => {
+      const el = document.getElementById(q.id);
+      if (el) el.classList.toggle('f-hide', !pasaFiltro(q));
+    });
+    aplicarBusqueda(); // la búsqueda se combina con los filtros
+  }
+
+  function actualizarGruposYVacio() {
+    let visibles = 0;
+    $$('.q-group').forEach((g) => {
+      const n = $$('.q', g).filter((c) => !c.classList.contains('f-hide') && !c.classList.contains('s-hide')).length;
+      g.classList.toggle('f-hide', n === 0);
+      visibles += n;
+    });
+    $('#q-empty').classList.toggle('show', visibles === 0);
+  }
+
+  /* =====================================================================
+     BUSCADOR GLOBAL (filtra unidades y resalta coincidencias)
+     ===================================================================== */
+  let consulta = '';
+
+  function limpiarResaltado() {
+    $$('mark.hl').forEach((m) => {
+      const p = m.parentNode;
+      p.replaceChild(document.createTextNode(m.textContent), m);
+      p.normalize();
+    });
+  }
+
+  function resaltar(root, qn) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(n) {
+        if (!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        if (n.parentElement.closest('select, option, script, style, textarea, .q-actions, .copy-code')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodos = [];
+    while (walker.nextNode()) nodos.push(walker.currentNode);
+    let total = 0;
+    nodos.forEach((nodo) => {
+      const txt = nodo.nodeValue;
+      // Texto normalizado con mapa de posiciones al original
+      let n = '';
+      const map = [];
+      for (let i = 0; i < txt.length; i++) {
+        const t = normChar(txt[i]);
+        for (let j = 0; j < t.length; j++) { n += t[j]; map.push(i); }
+      }
+      const rangos = [];
+      let pos = n.indexOf(qn);
+      while (pos !== -1) {
+        rangos.push([map[pos], map[pos + qn.length - 1] + 1]);
+        pos = n.indexOf(qn, pos + qn.length);
+      }
+      if (!rangos.length) return;
+      total += rangos.length;
+      const frag = document.createDocumentFragment();
+      let last = 0;
+      rangos.forEach(([a, b]) => {
+        if (a > last) frag.appendChild(document.createTextNode(txt.slice(last, a)));
+        const m = document.createElement('mark');
+        m.className = 'hl';
+        m.textContent = txt.slice(a, b);
+        frag.appendChild(m);
+        last = b;
+      });
+      if (last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+      nodo.parentNode.replaceChild(frag, nodo);
+    });
+    return total;
+  }
+
+  function aplicarBusqueda() {
+    limpiarResaltado();
+    const qn = norm(consulta.trim().replace(/\s+/g, ' '));
+    const activa = qn.length >= 2;
+    $('#search-box').classList.toggle('has-text', consulta.length > 0);
+    const unidades = $$('#contenido [data-unit]');
+    const secciones = $$('#contenido section.main-sec');
+
+    if (!activa) {
+      unidades.forEach((u) => u.classList.remove('s-hide'));
+      secciones.forEach((s) => s.classList.remove('s-hide'));
+      $('#search-summary').classList.remove('show');
+      actualizarGruposYVacio();
+      medirHeader();
+      return;
+    }
+
+    let nBloques = 0, nPreguntas = 0, nCoinc = 0;
+    unidades.forEach((u) => u.classList.toggle('s-hide', !norm(u.textContent).includes(qn)));
+    nPreguntas = $$('#q-list .q').filter((c) => !c.classList.contains('s-hide') && !c.classList.contains('f-hide')).length;
+    actualizarGruposYVacio();
+
+    secciones.forEach((s) => {
+      if (s.id === 'preguntas') { s.classList.toggle('s-hide', nPreguntas === 0); return; }
+      const vis = $$('[data-unit]', s).filter((u) => !u.classList.contains('s-hide'));
+      s.classList.toggle('s-hide', vis.length === 0);
+      nBloques += vis.length;
+    });
+    unidades.forEach((u) => {
+      if (u.classList.contains('s-hide') || u.classList.contains('f-hide')) return;
+      nCoinc += resaltar(u, qn);
+    });
+
+    const hayFiltros = filtro.bloque || filtro.soloConfirmar;
+    const sum = $('#search-summary');
+    sum.innerHTML = (nCoinc || nPreguntas || nBloques)
+      ? `${nCoinc} coincidencia${nCoinc === 1 ? '' : 's'} · ${nBloques} bloque${nBloques === 1 ? '' : 's'} de contenido · ${nPreguntas} pregunta${nPreguntas === 1 ? '' : 's'}${hayFiltros ? ' · <strong>hay filtros activos en el banco</strong>' : ''}`
+      : 'Sin resultados. Prueba con otra palabra.';
+    sum.classList.add('show');
+    medirHeader();
+  }
+
+  let tBusqueda;
+  $('#search').addEventListener('input', (e) => {
+    consulta = e.target.value;
+    clearTimeout(tBusqueda);
+    tBusqueda = setTimeout(aplicarBusqueda, 140);
+  });
+  $('#search').addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.target.value = ''; consulta = ''; aplicarBusqueda(); } });
+  $('#search-clear').addEventListener('click', () => {
+    $('#search').value = ''; consulta = ''; aplicarBusqueda(); $('#search').focus();
+  });
+
+  /* =====================================================================
+     MODO SIMULACRO (pregunta al azar, respuesta oculta)
+     ===================================================================== */
+  const sim = { bloque: '', mazo: [], pos: 0, ultimo: null };
+
+  function renderSimSelect() {
+    $('#sim-bloque').innerHTML = '<option value="">Todos los bloques</option>' +
+      BLOQUES.map((b) => `<option value="${esc(b)}">${esc(b)}</option>`).join('');
+  }
+  function barajar(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+  function armarMazo() {
+    sim.mazo = barajar(PREGUNTAS.filter((q) => !sim.bloque || q.bloque === sim.bloque));
+    // Evita repetir la última pregunta al barajar de nuevo
+    if (sim.mazo.length > 1 && sim.ultimo && sim.mazo[0].id === sim.ultimo) sim.mazo.push(sim.mazo.shift());
+    sim.pos = 0;
+  }
+  function renderSim() {
+    const q = sim.mazo[sim.pos];
+    const a = $('#sim-a');
+    a.classList.remove('show');
+    $('#sim-ver').textContent = 'Ver respuesta';
+    if (!q) {
+      $('#sim-meta').innerHTML = '';
+      $('#sim-q').textContent = 'No hay preguntas en este bloque.';
+      a.innerHTML = '';
+      $('#sim-count').textContent = '';
+      $('#sim-ver').disabled = true;
+      return;
+    }
+    $('#sim-ver').disabled = false;
+    $('#sim-meta').innerHTML = `<span class="tag">${esc(q.bloque)}</span>` +
+      (q.confirmar ? '<span class="tag-warn">Confirmar</span>' : '');
+    $('#sim-q').textContent = q.pregunta;
+    a.innerHTML = `<p>${formatRespuesta(q.respuesta)}</p>`;
+    $('#sim-count').textContent = `Pregunta ${sim.pos + 1} de ${sim.mazo.length} · orden aleatorio`;
+    sim.ultimo = q.id;
+  }
+  $('#sim-ver').addEventListener('click', () => {
+    const a = $('#sim-a');
+    const show = !a.classList.contains('show');
+    a.classList.toggle('show', show);
+    $('#sim-ver').textContent = show ? 'Ocultar respuesta' : 'Ver respuesta';
+  });
+  $('#sim-sig').addEventListener('click', () => {
+    if (sim.pos + 1 >= sim.mazo.length) armarMazo(); else sim.pos++;
+    renderSim();
+  });
+  $('#sim-bloque').addEventListener('change', (e) => { sim.bloque = e.target.value; sim.ultimo = null; armarMazo(); renderSim(); });
+
+  /* =====================================================================
+     COPIAR BLOQUES DE CÓDIGO
+     ===================================================================== */
+  $$('.code-block').forEach((cb) => {
+    const b = document.createElement('button');
+    b.className = 'btn copy-code';
+    b.textContent = 'Copiar';
+    b.addEventListener('click', async () => {
+      const lineas = $('pre', cb).textContent.split('\n').filter((l) => l.trim() && !l.trim().startsWith('#'));
+      const ok = await copiar(lineas.join('\n'));
+      toast(ok ? 'Comandos copiados' : 'No se pudo copiar');
+    });
+    cb.appendChild(b);
+  });
+
+  /* =====================================================================
+     TEMA (automático → claro → oscuro)
+     ===================================================================== */
+  const ETIQUETA_TEMA = { auto: 'Auto', light: 'Claro', dark: 'Oscuro' };
+  let tema = store.get(KEY_TEMA, 'auto');
+  if (!['auto', 'light', 'dark'].includes(tema)) tema = 'auto';
+  function aplicarTema() {
+    if (tema === 'auto') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', tema);
+    $('#theme-label').textContent = ETIQUETA_TEMA[tema];
+    $('#theme-btn').setAttribute('aria-label', 'Tema: ' + ETIQUETA_TEMA[tema] + '. Cambiar tema');
+  }
+  $('#theme-btn').addEventListener('click', () => {
+    tema = tema === 'auto' ? 'light' : tema === 'light' ? 'dark' : 'auto';
+    store.set(KEY_TEMA, tema);
+    aplicarTema();
+    toast('Tema: ' + ETIQUETA_TEMA[tema]);
+  });
+
+  /* =====================================================================
+     IMPRIMIR / PDF
+     ===================================================================== */
+  $('#print-btn').addEventListener('click', () => window.print());
+
+  /* =====================================================================
+     NAVEGACIÓN: menú móvil, sección activa, volver arriba
+     ===================================================================== */
+  function abrirMenu(abrir) {
+    document.body.classList.toggle('nav-open', abrir);
+    $('#menu-btn').setAttribute('aria-expanded', abrir ? 'true' : 'false');
+  }
+  $('#menu-btn').addEventListener('click', () => abrirMenu(true));
+  $('#menu-close').addEventListener('click', () => abrirMenu(false));
+  $('#nav-overlay').addEventListener('click', () => abrirMenu(false));
+  $('#nav').addEventListener('click', (e) => { if (e.target.closest('a')) abrirMenu(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') abrirMenu(false); });
+
+  function medirHeader() {
+    document.documentElement.style.setProperty('--hh', $('#topbar').offsetHeight + 'px');
+  }
+  window.addEventListener('resize', medirHeader);
+
+  // Marca en el menú la sección visible
+  const enlaces = $$('#nav a');
+  const objetivos = $$('#contenido .main-sec, #contenido .sub');
+  if ('IntersectionObserver' in window) {
+    const visibles = new Map();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => visibles.set(en.target.id, en.isIntersecting ? en.boundingClientRect.top : null));
+      let mejor = null, mejorTop = Infinity;
+      visibles.forEach((top, id) => { if (top !== null && Math.abs(top) < mejorTop) { mejorTop = Math.abs(top); mejor = id; } });
+      if (!mejor) return;
+      enlaces.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + mejor));
+    }, { rootMargin: '-15% 0px -70% 0px' });
+    objetivos.forEach((o) => io.observe(o));
+  }
+
+  window.addEventListener('scroll', () => {
+    $('#to-top').classList.toggle('show', window.scrollY > 900);
+  }, { passive: true });
+  $('#to-top').addEventListener('click', () => window.scrollTo({ top: 0 }));
+
+  /* =====================================================================
+     INICIO
+     ===================================================================== */
+  aplicarTema();
+  renderPreguntas();
+  renderChips();
+  renderSimSelect();
+  armarMazo();
+  renderSim();
+  consulta = $('#search').value || ''; // el navegador puede restaurar el texto al recargar
+  aplicarFiltros();
+  medirHeader();
+})();
+</script>
+</body>
+</html>
